@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { QuillEditor } from '../components/QuillEditor';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from '../components/ui/button';
@@ -20,25 +19,6 @@ import { toast } from 'sonner';
 import { Save, Send, ArrowLeft, Image } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const quillModules = {
-  toolbar: [
-    [{ 'header': [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    ['blockquote'],
-    ['link'],
-    ['clean']
-  ],
-};
-
-const quillFormats = [
-  'header',
-  'bold', 'italic', 'underline', 'strike',
-  'list', 'bullet',
-  'blockquote',
-  'link'
-];
 
 export default function EditorPage() {
   const { articleId } = useParams();
@@ -326,13 +306,10 @@ export default function EditorPage() {
             <Label className="text-gray-700 font-semibold mb-2 block">
               {t('content')} (English) <span className="text-red-500">*</span>
             </Label>
-            <div data-testid="content-editor">
-              <ReactQuill
-                theme="snow"
+            <div data-testid="content-editor" className="border border-gray-200 rounded-sm">
+              <QuillEditor
                 value={formData.content}
                 onChange={(value) => handleContentChange(value, 'content')}
-                modules={quillModules}
-                formats={quillFormats}
                 placeholder="Write your article content here..."
               />
             </div>
@@ -343,13 +320,10 @@ export default function EditorPage() {
             <Label className="text-gray-700 font-semibold mb-2 block font-hindi">
               {t('contentHindi')} (हिंदी)
             </Label>
-            <div data-testid="content-hi-editor">
-              <ReactQuill
-                theme="snow"
+            <div data-testid="content-hi-editor" className="border border-gray-200 rounded-sm">
+              <QuillEditor
                 value={formData.content_hi}
                 onChange={(value) => handleContentChange(value, 'content_hi')}
-                modules={quillModules}
-                formats={quillFormats}
                 placeholder="यहां अपने लेख की सामग्री लिखें..."
                 className="font-hindi"
               />

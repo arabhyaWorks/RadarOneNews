@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Public+Sans:wght@300;400;500;600;700&family=Rozha+One&family=Mukta:wght@300;400;500;600;700&display=swap');
+@import 'quill/dist/quill.snow.css';
 
 @tailwind base;
 @tailwind components;
