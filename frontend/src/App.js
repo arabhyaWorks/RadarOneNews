@@ -16,6 +16,7 @@ import ArticlePage from './pages/ArticlePage';
 import CategoryPage from './pages/CategoryPage';
 import SearchPage from './pages/SearchPage';
 import AdminPage from './pages/AdminPage';
+import AuthorPage from './pages/AuthorPage';
 
 import './App.css';
 
@@ -43,6 +44,7 @@ function AppContent() {
           <Route path="/article/:articleId" element={<ArticlePage />} />
           <Route path="/category/:category" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/author/:authorId" element={<AuthorPage />} />
           
           {/* Protected Routes */}
           <Route path="/dashboard" element={

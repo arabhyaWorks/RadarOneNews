@@ -28,7 +28,7 @@ export default function AuthCallback() {
       try {
         const user = await handleGoogleCallback(sessionId);
         toast.success(`Welcome, ${user.name}!`);
-        navigate('/dashboard', { replace: true, state: { user } });
+        navigate(user.role === 'admin' ? '/admin' : '/dashboard', { replace: true, state: { user } });
       } catch (error) {
         console.error('Google auth error:', error);
         toast.error('Authentication failed');

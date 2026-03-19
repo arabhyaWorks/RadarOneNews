@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Flame, Eye } from 'lucide-react';
+import { format } from 'date-fns';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -20,6 +21,7 @@ export default function HomePage() {
   const { t, isHindi } = useLanguage();
   const [featuredArticles, setFeaturedArticles] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
+  const [popularArticles, setPopularArticles] = useState([]);
   const [categoryArticles, setCategoryArticles] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +42,14 @@ export default function HomePage() {
       // Fetch latest articles
       const latestRes = await axios.get(`${API}/public/articles?limit=10`);
       setLatestArticles(latestRes.data);
+
+      // Fetch popular articles (top by views)
+      const popularRes = await axios.get(`${API}/public/articles?limit=50`);
+      const sorted = [...popularRes.data]
+        .filter(a => a.views > 0)
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 5);
+      setPopularArticles(sorted);
 
       // Fetch articles by category
       const categoryPromises = categories.map(cat => 
@@ -122,6 +132,111 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Popular News Section */}
+      {(loading || popularArticles.length > 0) && (
+        <section className="max-w-7xl mx-auto px-4 py-8">
+          <div className="section-divider mb-8 flex items-center gap-3">
+            {/* <Flame className="w-7 h-7 text-orange-500" /> */}
+            <h2 className={`text-3xl md:text-4xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+              {t('popular')}
+            </h2>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center gap-4 bg-white border border-gray-200 p-4 animate-pulse">
+                  <div className="w-12 h-12 bg-gray-200 rounded" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Top article — large card on left spanning full height on desktop */}
+              {popularArticles[0] && (
+                <Link
+                  to={`/article/${popularArticles[0].article_id}`}
+                  className="group relative overflow-hidden bg-white border border-gray-200 hover-lift row-span-1 lg:row-span-3 flex flex-col"
+                  style={{ gridRow: 'span 3' }}
+                >
+                  {popularArticles[0].image_url && (
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={popularArticles[0].image_url}
+                        alt={isHindi && popularArticles[0].title_hi ? popularArticles[0].title_hi : popularArticles[0].title}
+                        className="w-full h-full object-cover news-card-image"
+                      />
+                    </div>
+                  )}
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white text-sm font-bold shrink-0">#1</span>
+                      <span className={`category-pill ${isHindi ? 'font-hindi' : ''}`}>{t(popularArticles[0].category.toLowerCase())}</span>
+                    </div>
+                    <h3 className={`text-xl font-bold text-gray-900 leading-tight line-clamp-3 mb-3 group-hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                      {isHindi && popularArticles[0].title_hi ? popularArticles[0].title_hi : popularArticles[0].title}
+                    </h3>
+                    <div className="flex items-center gap-3 text-xs text-gray-500 mt-auto">
+                      <span className="flex items-center gap-1 font-semibold text-orange-500">
+                        <Eye className="w-3.5 h-3.5" />
+                        {popularArticles[0].views.toLocaleString()} {t('views')}
+                      </span>
+                      <span>{t('by')} {popularArticles[0].author_name}</span>
+                      <span>{format(new Date(popularArticles[0].created_at), 'MMM dd, yyyy')}</span>
+                    </div>
+                  </div>
+                </Link>
+              )}
+
+              {/* Ranks 2–5 — compact horizontal list */}
+              <div className="flex flex-col gap-4">
+                {popularArticles.slice(1).map((article, idx) => {
+                  const artTitle = isHindi && article.title_hi ? article.title_hi : article.title;
+                  return (
+                    <Link
+                      key={article.article_id}
+                      to={`/article/${article.article_id}`}
+                      className="group flex items-start gap-4 bg-white border border-gray-200 p-4 hover-lift transition-shadow"
+                    >
+                      {/* Thumbnail */}
+                      {article.image_url ? (
+                        <div className="w-32 h-20 overflow-hidden rounded shrink-0">
+                          <img src={article.image_url} alt={artTitle} className="w-full h-full object-cover news-card-image" />
+                        </div>
+                      ) : (
+                        <div className="w-32 h-20 rounded shrink-0 bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]" />
+                      )}
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <span className={`category-pill text-xs mb-1 inline-block ${isHindi ? 'font-hindi' : ''}`}>
+                          {t(article.category.toLowerCase())}
+                        </span>
+                        <h4 className={`text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                          {artTitle}
+                        </h4>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                          <span className="flex items-center gap-1 text-orange-500 font-semibold">
+                            <Eye className="w-3 h-3" />
+                            {article.views.toLocaleString()}
+                          </span>
+                          <span>•</span>
+                          <span>{format(new Date(article.created_at), 'MMM dd')}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Category Sections */}
       {categories.map((category) => (

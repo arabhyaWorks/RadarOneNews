@@ -19,8 +19,8 @@ const QuillEditor = forwardRef(({ value, onChange, placeholder, modules, formats
       [{ 'header': [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      ['blockquote'],
-      ['link'],
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video'],
       ['clean']
     ],
   };
@@ -29,8 +29,8 @@ const QuillEditor = forwardRef(({ value, onChange, placeholder, modules, formats
     'header',
     'bold', 'italic', 'underline', 'strike',
     'list', 'bullet',
-    'blockquote',
-    'link'
+    'blockquote', 'code-block',
+    'link', 'image', 'video'
   ];
 
   const notifyChange = () => {

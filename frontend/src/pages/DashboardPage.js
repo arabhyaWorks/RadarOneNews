@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from '../components/ui/button';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { FileText, Eye, Edit, Trash2, Plus, Send } from 'lucide-react';
+import { FileText, Eye, Edit, Trash2, Plus, Send, Clock, XCircle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -115,69 +115,105 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#faf9f6]" data-testid="dashboard-page">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className={`text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h1 className={`text-2xl md:text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {t('dashboard')}
             </h1>
-            <p className={`text-gray-600 mt-1 ${isHindi ? 'font-hindi' : ''}`}>
+            <p className={`text-sm md:text-base text-gray-600 mt-0.5 md:mt-1 ${isHindi ? 'font-hindi' : ''}`}>
               {isHindi ? `स्वागत है, ${user?.name}` : `Welcome, ${user?.name}`}
             </p>
           </div>
           <Link to="/editor">
-            <Button className="mt-4 md:mt-0 bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold" data-testid="new-article-btn">
-              <Plus className="w-4 h-4 mr-2" />
-              {t('writeArticle')}
+            <Button className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold" data-testid="new-article-btn">
+              <Plus className="w-4 h-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">{t('writeArticle')}</span>
+              <span className="sm:hidden">{isHindi ? 'लिखें' : 'Write'}</span>
             </Button>
           </Link>
         </div>
 
+        {/* Pending Approval Banner */}
+        {user?.status === 'pending' && (
+          <div className="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded p-4">
+            <Clock className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+            <div>
+              <p className={`font-semibold text-amber-800 ${isHindi ? 'font-hindi' : ''}`}>
+                {isHindi ? 'अनुमोदन की प्रतीक्षा है' : 'Pending Admin Approval'}
+              </p>
+              <p className={`text-sm text-amber-700 mt-0.5 ${isHindi ? 'font-hindi' : ''}`}>
+                {isHindi
+                  ? 'आपका खाता अभी तक स्वीकृत नहीं हुआ है। आप ड्राफ्ट सहेज सकते हैं लेकिन प्रकाशित नहीं कर सकते।'
+                  : 'Your account has not been approved yet. You can save drafts but cannot publish articles until an admin approves you.'}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Rejected Banner */}
+        {user?.status === 'rejected' && (
+          <div className="mb-6 flex items-start gap-3 bg-red-50 border border-red-300 rounded p-4">
+            <XCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+            <div>
+              <p className={`font-semibold text-red-800 ${isHindi ? 'font-hindi' : ''}`}>
+                {isHindi ? 'खाता अस्वीकृत' : 'Account Rejected'}
+              </p>
+              <p className={`text-sm text-red-700 mt-0.5 ${isHindi ? 'font-hindi' : ''}`}>
+                {isHindi
+                  ? 'आपका खाता एडमिन द्वारा अस्वीकृत किया गया है। कृपया एडमिन से संपर्क करें।'
+                  : 'Your account has been rejected by the admin. Please contact the admin for assistance.'}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="stat-card" data-testid="stat-total">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#2a5a5a]/10 rounded flex items-center justify-center">
-                <FileText className="w-6 h-6 text-[#2a5a5a]" />
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+          <div className="stat-card !p-3 md:!p-6" data-testid="stat-total">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-[#2a5a5a]/10 rounded flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 md:w-6 md:h-6 text-[#2a5a5a]" />
               </div>
-              <div>
-                <p className={`text-sm text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>{t('totalArticles')}</p>
-                <p className="text-2xl font-bold text-[#2a5a5a]">{stats.total}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="stat-card" data-testid="stat-published">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded flex items-center justify-center">
-                <Send className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <p className={`text-sm text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>{t('published')}</p>
-                <p className="text-2xl font-bold text-green-600">{stats.published}</p>
+              <div className="min-w-0">
+                <p className={`text-xs md:text-sm text-gray-500 leading-tight md:leading-normal truncate ${isHindi ? 'font-hindi' : ''}`}>{t('totalArticles')}</p>
+                <p className="text-xl md:text-2xl font-bold text-[#2a5a5a] leading-none mt-0.5 md:mt-0">{stats.total}</p>
               </div>
             </div>
           </div>
           
-          <div className="stat-card" data-testid="stat-drafts">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-amber-100 rounded flex items-center justify-center">
-                <Edit className="w-6 h-6 text-amber-600" />
+          <div className="stat-card !p-3 md:!p-6" data-testid="stat-published">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-green-100 rounded flex items-center justify-center shrink-0">
+                <Send className="w-4 h-4 md:w-6 md:h-6 text-green-600" />
               </div>
-              <div>
-                <p className={`text-sm text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>{t('drafts')}</p>
-                <p className="text-2xl font-bold text-amber-600">{stats.drafts}</p>
+              <div className="min-w-0">
+                <p className={`text-xs md:text-sm text-gray-500 leading-tight md:leading-normal truncate ${isHindi ? 'font-hindi' : ''}`}>{t('published')}</p>
+                <p className="text-xl md:text-2xl font-bold text-green-600 leading-none mt-0.5 md:mt-0">{stats.published}</p>
               </div>
             </div>
           </div>
           
-          <div className="stat-card" data-testid="stat-views">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#f4c430]/20 rounded flex items-center justify-center">
-                <Eye className="w-6 h-6 text-[#f4c430]" />
+          <div className="stat-card !p-3 md:!p-6" data-testid="stat-drafts">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-amber-100 rounded flex items-center justify-center shrink-0">
+                <Edit className="w-4 h-4 md:w-6 md:h-6 text-amber-600" />
               </div>
-              <div>
-                <p className={`text-sm text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>{t('totalViews')}</p>
-                <p className="text-2xl font-bold text-[#f4c430]">{stats.views}</p>
+              <div className="min-w-0">
+                <p className={`text-xs md:text-sm text-gray-500 leading-tight md:leading-normal truncate ${isHindi ? 'font-hindi' : ''}`}>{t('drafts')}</p>
+                <p className="text-xl md:text-2xl font-bold text-amber-600 leading-none mt-0.5 md:mt-0">{stats.drafts}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="stat-card !p-3 md:!p-6" data-testid="stat-views">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-[#f4c430]/20 rounded flex items-center justify-center shrink-0">
+                <Eye className="w-4 h-4 md:w-6 md:h-6 text-[#f4c430]" />
+              </div>
+              <div className="min-w-0">
+                <p className={`text-xs md:text-sm text-gray-500 leading-tight md:leading-normal truncate ${isHindi ? 'font-hindi' : ''}`}>{t('totalViews')}</p>
+                <p className="text-xl md:text-2xl font-bold text-[#f4c430] leading-none mt-0.5 md:mt-0">{stats.views}</p>
               </div>
             </div>
           </div>
@@ -201,7 +237,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Articles Table */}
+        {/* Articles List */}
         <div className="bg-white border border-gray-200 overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">
@@ -223,62 +259,112 @@ export default function DashboardPage() {
               </Link>
             </div>
           ) : (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th className={isHindi ? 'font-hindi' : ''}>{t('title')}</th>
-                  <th className={isHindi ? 'font-hindi' : ''}>{t('category')}</th>
-                  <th className={isHindi ? 'font-hindi' : ''}>{t('status')}</th>
-                  <th className={isHindi ? 'font-hindi' : ''}>{t('views')}</th>
-                  <th className={isHindi ? 'font-hindi' : ''}>{isHindi ? 'तारीख' : 'Date'}</th>
-                  <th className={isHindi ? 'font-hindi' : ''}>{t('actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th className={isHindi ? 'font-hindi' : ''}>{t('title')}</th>
+                      <th className={isHindi ? 'font-hindi' : ''}>{t('category')}</th>
+                      <th className={isHindi ? 'font-hindi' : ''}>{t('status')}</th>
+                      <th className={isHindi ? 'font-hindi' : ''}>{t('views')}</th>
+                      <th className={isHindi ? 'font-hindi' : ''}>{isHindi ? 'तारीख' : 'Date'}</th>
+                      <th className={isHindi ? 'font-hindi' : ''}>{t('actions')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {articles.map((article) => (
+                      <tr key={article.article_id} data-testid={`article-row-${article.article_id}`}>
+                        <td>
+                          <div className="max-w-xs">
+                            <p className={`font-semibold text-gray-900 line-clamp-1 ${isHindi ? 'font-hindi' : ''}`}>
+                              {isHindi && article.title_hi ? article.title_hi : article.title}
+                            </p>
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`category-pill ${isHindi ? 'font-hindi' : ''}`}>
+                            {t(article.category.toLowerCase())}
+                          </span>
+                        </td>
+                        <td>{getStatusBadge(article.status)}</td>
+                        <td>{article.views || 0}</td>
+                        <td className="text-sm text-gray-500 whitespace-nowrap">{formatDate(article.created_at)}</td>
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <Link to={`/article/${article.article_id}`}>
+                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                            <Link to={`/editor/${article.article_id}`}>
+                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-gray-500 hover:text-red-600"
+                              onClick={() => setDeleteId(article.article_id)}
+                              data-testid={`delete-btn-${article.article_id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-gray-100">
                 {articles.map((article) => (
-                  <tr key={article.article_id} data-testid={`article-row-${article.article_id}`}>
-                    <td>
-                      <div className="max-w-xs">
-                        <p className={`font-semibold text-gray-900 line-clamp-1 ${isHindi ? 'font-hindi' : ''}`}>
-                          {isHindi && article.title_hi ? article.title_hi : article.title}
-                        </p>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`category-pill ${isHindi ? 'font-hindi' : ''}`}>
+                  <div key={article.article_id} className="p-4 bg-white hover:bg-gray-50 flex flex-col gap-3">
+                    <div className="flex justify-between items-start gap-4">
+                      <p className={`font-semibold text-gray-900 line-clamp-2 ${isHindi ? 'font-hindi' : ''}`}>
+                        {isHindi && article.title_hi ? article.title_hi : article.title}
+                      </p>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 mt-1">
+                      <div className="shrink-0">{getStatusBadge(article.status)}</div>
+                      <span className={`category-pill text-[10px] py-0.5 px-2 bg-gray-100 ${isHindi ? 'font-hindi' : ''}`}>
                         {t(article.category.toLowerCase())}
                       </span>
-                    </td>
-                    <td>{getStatusBadge(article.status)}</td>
-                    <td>{article.views || 0}</td>
-                    <td className="text-sm text-gray-500">{formatDate(article.created_at)}</td>
-                    <td>
-                      <div className="flex items-center gap-2">
-                        <Link to={`/article/${article.article_id}`}>
-                          <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                        <Link to={`/editor/${article.article_id}`}>
-                          <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-gray-500 hover:text-red-600"
-                          onClick={() => setDeleteId(article.article_id)}
-                          data-testid={`delete-btn-${article.article_id}`}
-                        >
-                          <Trash2 className="w-4 h-4" />
+                      <span className="flex items-center gap-1 ml-auto">
+                        <Eye className="w-3.5 h-3.5" />{article.views || 0}
+                      </span>
+                      <span>•</span>
+                      <span>{formatDate(article.created_at)}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-2 pt-3 border-t border-gray-50">
+                      <Link to={`/article/${article.article_id}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full text-gray-600 h-8">
+                          <Eye className="w-3.5 h-3.5 mr-2" /> {isHindi ? 'देखें' : 'View'}
                         </Button>
-                      </div>
-                    </td>
-                  </tr>
+                      </Link>
+                      <Link to={`/editor/${article.article_id}`} className="flex-1">
+                        <Button variant="outline" size="sm" className="w-full text-gray-600 h-8">
+                          <Edit className="w-3.5 h-3.5 mr-2" /> {isHindi ? 'संपादन' : 'Edit'}
+                        </Button>
+                      </Link>
+                      <Button 
+                        variant="outline" size="sm" 
+                        className="text-red-500 hover:text-red-600 border-gray-200 shrink-0 h-8 px-2"
+                        onClick={() => setDeleteId(article.article_id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </>
           )}
         </div>
       </div>

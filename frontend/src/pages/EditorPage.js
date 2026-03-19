@@ -17,22 +17,33 @@ import {
 } from '../components/ui/select';
 import { toast } from 'sonner';
 import { Save, Send, ArrowLeft, Image } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../components/ui/alert-dialog';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function EditorPage() {
   const { articleId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { t, isHindi } = useLanguage();
+  const isApproved = user?.role === 'admin' || user?.status === 'approved';
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [confirmPublish, setConfirmPublish] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
-    title_hi: '',
     content: '',
-    content_hi: '',
     category: '',
     image_url: '',
     is_featured: false
@@ -40,23 +51,12 @@ export default function EditorPage() {
   
   // Refs for Quill editors
   const contentEditorRef = useRef(null);
-  const contentHiEditorRef = useRef(null);
 
   const isEditing = !!articleId;
 
-  const categories = [
-    { id: 'sports', name: 'Sports', name_hi: 'खेल' },
-    { id: 'crime', name: 'Crime', name_hi: 'अपराध' },
-    { id: 'politics', name: 'Politics', name_hi: 'राजनीति' },
-    { id: 'entertainment', name: 'Entertainment', name_hi: 'मनोरंजन' },
-    { id: 'business', name: 'Business', name_hi: 'व्यापार' },
-    { id: 'technology', name: 'Technology', name_hi: 'प्रौद्योगिकी' }
-  ];
-
   useEffect(() => {
-    if (articleId) {
-      fetchArticle();
-    }
+    axios.get(`${API}/categories`).then(res => setCategories(res.data)).catch(() => {});
+    if (articleId) fetchArticle();
   }, [articleId]);
 
   const fetchArticle = async () => {
@@ -70,9 +70,7 @@ export default function EditorPage() {
       const article = response.data;
       setFormData({
         title: article.title || '',
-        title_hi: article.title_hi || '',
         content: article.content || '',
-        content_hi: article.content_hi || '',
         category: article.category || '',
         image_url: article.image_url || '',
         is_featured: article.is_featured || false
@@ -114,10 +112,8 @@ export default function EditorPage() {
   // Get content directly from Quill editor DOM
   const getEditorContent = () => {
     const contentEditor = document.querySelector('[data-testid="content-editor"] .ql-editor');
-    const contentHiEditor = document.querySelector('[data-testid="content-hi-editor"] .ql-editor');
     
     let content = formData.content;
-    let content_hi = formData.content_hi;
     
     // Fallback: read directly from DOM if state is empty
     if (isContentEmpty(content) && contentEditor) {
@@ -125,17 +121,12 @@ export default function EditorPage() {
       content = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
     }
     
-    if (isContentEmpty(content_hi) && contentHiEditor) {
-      const html = contentHiEditor.innerHTML;
-      content_hi = (html === '<p><br></p>' || html === '<p></p>') ? '' : html;
-    }
-    
-    return { content, content_hi };
+    return { content };
   };
 
   const handleSubmit = async (status) => {
     // Get content from editors (with fallback to DOM)
-    const { content, content_hi } = getEditorContent();
+    const { content } = getEditorContent();
     
     if (!formData.title.trim()) {
       toast.error(isHindi ? 'शीर्षक आवश्यक है' : 'Title is required');
@@ -156,7 +147,6 @@ export default function EditorPage() {
       const payload = {
         ...formData,
         content,
-        content_hi,
         status
       };
 
@@ -197,20 +187,21 @@ export default function EditorPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-[#faf9f6]" data-testid="editor-page">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-[1600px] w-full mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-8">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Button 
               variant="ghost" 
               onClick={() => navigate('/dashboard')}
-              className="text-gray-600 hover:text-[#2a5a5a]"
+              className="text-gray-600 hover:text-[#2a5a5a] px-2 -ml-2 sm:-ml-0"
               data-testid="back-btn"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
-            <h1 className={`text-2xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {isEditing 
                 ? (isHindi ? 'लेख संपादित करें' : 'Edit Article')
                 : t('writeArticle')
@@ -218,160 +209,208 @@ export default function EditorPage() {
             </h1>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 px-1 sm:px-0">
             <Button
               variant="outline"
               onClick={() => handleSubmit('draft')}
               disabled={saving}
-              className="border-[#2a5a5a] text-[#2a5a5a] hover:bg-[#2a5a5a] hover:text-white"
+              className="flex-1 sm:flex-none justify-center border-[#2a5a5a] text-[#2a5a5a] hover:bg-[#2a5a5a] hover:text-white px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
               data-testid="save-draft-btn"
             >
-              <Save className="w-4 h-4 mr-2" />
+              <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 shrink-0" />
               {t('saveAsDraft')}
             </Button>
             <Button
-              onClick={() => handleSubmit('published')}
-              disabled={saving}
-              className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold"
+              onClick={() => setConfirmPublish(true)}
+              disabled={saving || !isApproved}
+              title={!isApproved ? (isHindi ? 'प्रकाशित करने के लिए एडमिन अनुमोदन आवश्यक है' : 'Admin approval required to publish') : ''}
+              className="flex-1 sm:flex-none justify-center bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
               data-testid="publish-btn"
             >
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 shrink-0" />
               {t('publish')}
             </Button>
           </div>
         </div>
 
-        {/* Form */}
-        <div className="bg-white border border-gray-200 p-6 space-y-6">
-          {/* English Title */}
-          <div>
-            <Label htmlFor="title" className="text-gray-700 font-semibold">
-              {t('title')} (English) <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Enter article title"
-              className="mt-1 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a] font-heading text-xl"
-              data-testid="title-input"
-            />
-          </div>
-
-          {/* Hindi Title */}
-          <div>
-            <Label htmlFor="title_hi" className="text-gray-700 font-semibold font-hindi">
-              {t('titleHindi')} (हिंदी)
-            </Label>
-            <Input
-              id="title_hi"
-              name="title_hi"
-              value={formData.title_hi}
-              onChange={handleChange}
-              placeholder="हिंदी में शीर्षक दर्ज करें"
-              className="mt-1 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a] font-hindi-heading text-xl"
-              data-testid="title-hi-input"
-            />
-          </div>
-
-          {/* Category & Image Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column: Editor Form */}
+          <div className="bg-white border border-gray-200 p-6 space-y-6 rounded shadow-sm h-fit">
+            {/* Article Title */}
             <div>
-              <Label className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
-                {t('category')} <span className="text-red-500">*</span>
+              <Label htmlFor="title" className="text-gray-700 font-semibold">
+                {t('title')} <span className="text-red-500">*</span>
               </Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
-              >
-                <SelectTrigger className="mt-1 py-6 rounded-sm" data-testid="category-select">
-                  <SelectValue placeholder={isHindi ? 'श्रेणी चुनें' : 'Select category'} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {isHindi ? cat.name_hi : cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder={isHindi ? 'शीर्षक दर्ज करें' : 'Enter article title'}
+                className="mt-1 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a] font-heading text-xl"
+                data-testid="title-input"
+              />
             </div>
 
-            <div>
-              <Label htmlFor="image_url" className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
-                {t('imageUrl')}
+            {/* Category & Image Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
+                  {t('category')} <span className="text-red-500">*</span>
+                </Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                >
+                  <SelectTrigger className="mt-1 py-6 rounded-sm" data-testid="category-select">
+                    <SelectValue placeholder={isHindi ? 'श्रेणी चुनें' : 'Select category'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {isHindi ? cat.name_hi : cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="image_url" className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
+                  {t('imageUrl')}
+                </Label>
+                <div className="relative mt-1">
+                  <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    id="image_url"
+                    name="image_url"
+                    value={formData.image_url}
+                    onChange={handleChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
+                    data-testid="image-url-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Featured Checkbox */}
+            <div className="flex items-center gap-3">
+              <Checkbox
+                id="is_featured"
+                checked={formData.is_featured}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_featured: checked }))}
+                data-testid="featured-checkbox"
+              />
+              <Label htmlFor="is_featured" className={`text-gray-700 font-semibold cursor-pointer ${isHindi ? 'font-hindi' : ''}`}>
+                {t('markFeatured')}
               </Label>
-              <div className="relative mt-1">
-                <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="image_url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
-                  data-testid="image-url-input"
+            </div>
+
+            {/* Article Content */}
+            <div className="flex flex-col flex-1 pb-10">
+              <Label className="text-gray-700 font-semibold mb-2 block">
+                {t('content')} <span className="text-red-500">*</span>
+              </Label>
+              <div data-testid="content-editor" className="border border-gray-200 rounded-sm">
+                <QuillEditor
+                  value={formData.content}
+                  onChange={(value) => handleContentChange(value, 'content')}
+                  placeholder={isHindi ? 'यहां अपने लेख की सामग्री लिखें...' : 'Write your article content here...'}
+                  className="min-h-[500px]"
                 />
               </div>
             </div>
           </div>
 
-          {/* Image Preview */}
-          {formData.image_url && (
-            <div className="relative aspect-video max-w-md overflow-hidden rounded border border-gray-200">
-              <img 
-                src={formData.image_url} 
-                alt="Preview" 
-                className="w-full h-full object-cover"
-                onError={(e) => e.target.style.display = 'none'}
-              />
-            </div>
-          )}
+          {/* Right Column: Live Preview */}
+          <div className="hidden lg:block">
+            <div className="sticky top-6">
+              <div className="bg-white border text-center border-gray-200 px-4 py-2 border-b-0 font-semibold text-gray-600 uppercase tracking-widest text-xs">
+                Live Preview
+              </div>
+              <div className="bg-white border border-gray-200 h-[calc(100vh-100px)] overflow-y-auto">
+                <div className="relative pb-8">
+                  {/* Preview Hero Image */}
+                  {formData.image_url ? (
+                    <div className="relative h-64 overflow-hidden bg-gray-100">
+                      <img 
+                        src={formData.image_url} 
+                        alt="Preview Hero" 
+                        className="w-full h-full object-cover"
+                        onError={(e) => e.target.style.display = 'none'}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 bg-gradient-to-tr from-[#2a5a5a] to-[#1a3a3a] flex items-center justify-center text-white/50 text-sm">
+                      Hero Image Placeholder
+                    </div>
+                  )}
 
-          {/* Featured Checkbox */}
-          <div className="flex items-center gap-3">
-            <Checkbox
-              id="is_featured"
-              checked={formData.is_featured}
-              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_featured: checked }))}
-              data-testid="featured-checkbox"
-            />
-            <Label htmlFor="is_featured" className={`text-gray-700 cursor-pointer ${isHindi ? 'font-hindi' : ''}`}>
-              {t('markFeatured')}
-            </Label>
-          </div>
+                  <div className="px-8 mt-8">
+                    {/* Preview Category/Badge */}
+                    <div className="flex items-center gap-3 mb-4">
+                      {formData.category ? (
+                        <div className={`category-pill ${isHindi ? 'font-hindi' : ''}`}>
+                          {t(formData.category)}
+                        </div>
+                      ) : (
+                        <div className="category-pill bg-gray-100 text-gray-400">Category</div>
+                      )}
+                      {formData.is_featured && <span className="featured-badge">{t('featured')}</span>}
+                    </div>
 
-          {/* English Content */}
-          <div>
-            <Label className="text-gray-700 font-semibold mb-2 block">
-              {t('content')} (English) <span className="text-red-500">*</span>
-            </Label>
-            <div data-testid="content-editor" className="border border-gray-200 rounded-sm">
-              <QuillEditor
-                value={formData.content}
-                onChange={(value) => handleContentChange(value, 'content')}
-                placeholder="Write your article content here..."
-              />
-            </div>
-          </div>
+                    {/* Preview Title */}
+                    <h1 className={`text-3xl font-bold text-gray-900 leading-tight mb-6 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                      {formData.title || <span className="text-gray-300">Article Title preview...</span>}
+                    </h1>
 
-          {/* Hindi Content */}
-          <div>
-            <Label className="text-gray-700 font-semibold mb-2 block font-hindi">
-              {t('contentHindi')} (हिंदी)
-            </Label>
-            <div data-testid="content-hi-editor" className="border border-gray-200 rounded-sm">
-              <QuillEditor
-                value={formData.content_hi}
-                onChange={(value) => handleContentChange(value, 'content_hi')}
-                placeholder="यहां अपने लेख की सामग्री लिखें..."
-                className="font-hindi"
-              />
+                    {/* Preview Meta */}
+                    <div className="flex items-center gap-4 text-gray-400 text-sm border-b border-gray-100 pb-5 mb-6">
+                      <span className="font-semibold text-gray-500">By {user?.name || 'Author'}</span>
+                      <span>•</span>
+                      <span>Just now</span>
+                    </div>
+
+                    {/* Preview Content */}
+                    <div 
+                      className={`article-content max-w-none ${isHindi ? 'font-hindi' : ''}`}
+                      dangerouslySetInnerHTML={{ __html: formData.content || '<p class="text-gray-300 italic">Start typing to see content preview...</p>' }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <AlertDialog open={confirmPublish} onOpenChange={setConfirmPublish}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className={isHindi ? 'font-hindi-heading' : 'font-heading'}>
+            {isHindi ? 'लेख प्रकाशित करें?' : 'Publish Article?'}
+          </AlertDialogTitle>
+          <AlertDialogDescription className={isHindi ? 'font-hindi' : ''}>
+            {isHindi
+              ? 'यह लेख सार्वजनिक रूप से दिखाई देगा। क्या आप सुनिश्चित हैं?'
+              : 'This article will be visible to the public. Are you sure you want to publish?'}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className={isHindi ? 'font-hindi' : ''}>
+            {isHindi ? 'रद्द करें' : 'Cancel'}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => { setConfirmPublish(false); handleSubmit('published'); }}
+            className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold"
+          >
+            {isHindi ? 'प्रकाशित करें' : 'Publish'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

@@ -274,16 +274,29 @@
 
 /* Footer */
 .footer {
-  background-color: #2a5a5a;
+  background: linear-gradient(160deg, #1a3a3a 0%, #2a5a5a 60%, #1e4848 100%);
   color: white;
-  padding: 3rem 0;
+  padding: 0;
+  position: relative;
 }
 
 .footer a {
-  color: #f4c430;
+  color: rgba(255,255,255,0.7);
   transition: color 0.2s ease;
 }
 
 .footer a:hover {
-  color: white;
+  color: #f4c430;
 }
+
+/* Hide externally injected Emergent badge */
+[class*="emergent"],
+[id*="emergent"],
+a[href*="emergent"],
+div[style*="Made with"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+

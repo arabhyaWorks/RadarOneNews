@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -10,7 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Menu, X, Search, User, LogOut, FileText, Settings, Globe } from 'lucide-react';
+import { Menu, X, Search, LogOut, FileText, Settings, Globe, Radio } from 'lucide-react';
+import axios from 'axios';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const Header = () => {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
@@ -18,6 +21,13 @@ export const Header = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [breakingNews, setBreakingNews] = useState(null);
+
+  useEffect(() => {
+    axios.get(`${API}/public/breaking-news`)
+      .then(res => setBreakingNews(res.data.text || null))
+      .catch(() => {});
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -32,17 +42,17 @@ export const Header = () => {
     navigate('/');
   };
 
-  const categories = [
-    { id: 'sports', name: t('sports') },
-    { id: 'crime', name: t('crime') },
-    { id: 'politics', name: t('politics') },
-    { id: 'entertainment', name: t('entertainment') },
-    { id: 'business', name: t('business') },
-    { id: 'technology', name: t('technology') },
-  ];
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${API}/categories`)
+      .then(res => setCategories(res.data))
+      .catch(() => {});
+  }, []);
 
   return (
-    <header className="sticky-header border-b border-gray-200 shadow-sm">
+    <>
+    <header className="sticky-header border-b border-gray-200 shadow-sm relative">
       {/* Top Bar */}
       <div className="bg-[#2a5a5a] text-white py-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
@@ -64,6 +74,22 @@ export const Header = () => {
           </button>
         </div>
       </div>
+
+      {/* Breaking News Ticker */}
+      {breakingNews && (
+        <div className="bg-red-600 text-white py-1.5 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 flex items-center gap-3">
+            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shrink-0 bg-white text-red-600 px-2 py-0.5 rounded">
+              <Radio className="w-3 h-3" />{isHindi ? 'ब्रेकिंग' : 'Breaking'}
+            </span>
+            <div className="overflow-hidden flex-1">
+              <p className={`animate-marquee whitespace-nowrap text-sm font-semibold ${isHindi ? 'font-hindi' : ''}`}>
+                {breakingNews}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Header */}
       <div className="bg-white py-4">
@@ -185,16 +211,18 @@ export const Header = () => {
                 className={`category-pill whitespace-nowrap ${isHindi ? 'font-hindi' : ''}`}
                 data-testid={`category-${cat.id}`}
               >
-                {cat.name}
+                {isHindi ? cat.name_hi : cat.name}
               </Link>
             ))}
           </div>
         </div>
       </nav>
 
+    </header>
+
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="mobile-menu md:hidden animate-fade-in">
+        <div className="mobile-menu md:hidden animate-fade-in fixed inset-0 z-[100] bg-white p-6 overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className={`text-xl font-bold ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {isHindi ? 'मेनू' : 'Menu'}
@@ -230,7 +258,7 @@ export const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block py-2 px-3 hover:bg-gray-100 rounded ${isHindi ? 'font-hindi' : ''}`}
               >
-                {cat.name}
+                {isHindi ? cat.name_hi : cat.name}
               </Link>
             ))}
           </div>
@@ -310,6 +338,6 @@ export const Header = () => {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };

@@ -25,6 +25,7 @@ const translations = {
     // Common
     featured: 'Featured',
     latest: 'Latest News',
+    popular: 'Popular News',
     search: 'Search news...',
     readMore: 'Read More',
     publishedOn: 'Published on',
@@ -103,6 +104,7 @@ const translations = {
     // Common
     featured: 'मुख्य खबरें',
     latest: 'ताज़ा खबरें',
+    popular: 'लोकप्रिय खबरें',
     search: 'समाचार खोजें...',
     readMore: 'आगे पढ़ें',
     publishedOn: 'प्रकाशित',

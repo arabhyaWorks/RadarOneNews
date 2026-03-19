@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=Public+Sans:wght@300;400;500;600;700&family=Rozha+One&family=Mukta:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 @import 'quill/dist/quill.snow.css';
 
 @tailwind base;
@@ -18,25 +18,32 @@
 
 body {
   margin: 0;
-  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-page);
   color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.6;
 }
 
-/* Hindi text styling */
+/* Hindi text styling — Noto Sans Devanagari is the gold standard for readable Devanagari on screen */
 .font-hindi {
-  font-family: 'Mukta', sans-serif;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 1.05em;
+  line-height: 1.75;
 }
 
 .font-hindi-heading {
-  font-family: 'Rozha One', serif;
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
-/* English heading styling */
+/* English heading styling — DM Serif Display: elegant yet highly legible */
 .font-heading {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Serif Display', Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
 /* Paper texture background */
@@ -48,7 +55,7 @@ body {
 
 /* Rich text editor styles */
 .ql-container {
-  font-family: 'Public Sans', sans-serif;
+  font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
   font-size: 16px;
 }
 
@@ -58,7 +65,7 @@ body {
 }
 
 .ql-editor h1, .ql-editor h2, .ql-editor h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'DM Serif Display', serif;
 }
 
 .ql-toolbar {
@@ -72,25 +79,27 @@ body {
 
 /* Article content styling */
 .article-content {
-  font-family: 'Public Sans', sans-serif;
-  font-size: 18px;
-  line-height: 1.9;
+  font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
   color: var(--text-primary);
 }
 
 .article-content h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.25rem;
+  font-weight: 400;
   margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
 .article-content h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  font-weight: 600;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.75rem;
+  font-weight: 400;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  letter-spacing: -0.01em;
 }
 
 .article-content p {
@@ -143,6 +152,15 @@ body {
   animation: slideUp 0.5s ease-out;
 }
 
+@keyframes marquee {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
 /* Hover effects */
 .hover-lift {
   transition: transform 0.3s ease-out;
@@ -161,22 +179,17 @@ body {
   transform: scale(1.05);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbar — all browsers */
+html, body {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--teal-deep);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #1f4444;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;                /* Chrome / Safari / Opera */
+  width: 0;
 }
 
 code {

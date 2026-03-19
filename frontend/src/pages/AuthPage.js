@@ -40,13 +40,14 @@ export default function AuthPage({ mode = 'login' }) {
 
     try {
       if (mode === 'login') {
-        await login(formData.email, formData.password);
+        const userData = await login(formData.email, formData.password);
         toast.success(isHindi ? 'सफलतापूर्वक लॉगिन हुआ!' : 'Successfully logged in!');
+        navigate(userData.role === 'admin' ? '/admin' : from, { replace: true });
       } else {
         await register(formData.email, formData.password, formData.name);
         toast.success(isHindi ? 'अकाउंट बनाया गया!' : 'Account created successfully!');
+        navigate(from, { replace: true });
       }
-      navigate(from, { replace: true });
     } catch (err) {
       const message = err.response?.data?.detail || (isHindi ? 'कुछ गलत हो गया' : 'Something went wrong');
       setError(message);
