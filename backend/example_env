@@ -1,0 +1,13 @@
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=admin
+DB_PASSWORD=
+DB_NAME=samachar_group
+JWT_SECRET=samachar-secret-key-2024
+CORS_ORIGINS=http://localhost:3000
+PORT=8001
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=ap-south-1
+S3_BUCKET_NAME=samachar-group-kashi

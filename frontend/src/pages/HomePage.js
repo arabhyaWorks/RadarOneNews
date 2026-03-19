@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
+import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
 import { ChevronRight, Flame, Eye } from 'lucide-react';
@@ -35,17 +36,19 @@ export default function HomePage() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      
+
+      const TTL = 60_000; // 60s — matches backend TTL
+
       // Fetch featured articles
-      const featuredRes = await axios.get(`${API}/public/articles?featured=true&limit=4`);
+      const featuredRes = await cachedGet(axios, `${API}/public/articles`, { params: { featured: 'true', limit: 4 } }, TTL);
       setFeaturedArticles(featuredRes.data);
 
       // Fetch latest articles
-      const latestRes = await axios.get(`${API}/public/articles?limit=10`);
+      const latestRes = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 10 } }, TTL);
       setLatestArticles(latestRes.data);
 
       // Fetch popular articles (top by views)
-      const popularRes = await axios.get(`${API}/public/articles?limit=50`);
+      const popularRes = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 50 } }, TTL);
       const sorted = [...popularRes.data]
         .filter(a => a.views > 0)
         .sort((a, b) => b.views - a.views)
@@ -53,8 +56,8 @@ export default function HomePage() {
       setPopularArticles(sorted);
 
       // Fetch articles by category
-      const categoryPromises = categories.map(cat => 
-        axios.get(`${API}/public/articles?category=${cat}&limit=4`)
+      const categoryPromises = categories.map(cat =>
+        cachedGet(axios, `${API}/public/articles`, { params: { category: cat, limit: 4 } }, TTL)
       );
       const categoryResults = await Promise.all(categoryPromises);
       

@@ -10,8 +10,39 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const { S3Client } = require('@aws-sdk/client-s3');
 
 const { pool, initDB } = require('./db');
+const { cache, TTL } = require('./cache');
+
+// ============== S3 SETUP ==============
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.S3_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      cb(null, `articles/${uuidv4()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Only image files are allowed'));
+  },
+});
 
 // ============== CONFIGURATION ==============
 
@@ -165,6 +196,13 @@ function requireAdmin(req, res, next) {
   return next();
 }
 
+// Columns for list queries — truncates LONGTEXT to avoid sending MBs of HTML
+// just to render card previews (cards only show ~3 lines of plain text)
+const LIST_COLS = `article_id, title, title_hi,
+  LEFT(content, 600) AS content, LEFT(content_hi, 600) AS content_hi,
+  category, image_url, is_featured, pinned, status,
+  author_id, author_name, created_at, updated_at, views`;
+
 // ============== ROUTER ==============
 
 const api = express.Router();
@@ -173,6 +211,21 @@ const api = express.Router();
 
 api.get('/', (req, res) => {
   res.json({ message: 'Samachar Group API', version: '1.0.0' });
+});
+
+// ============== UPLOAD ENDPOINT ==============
+
+// POST /api/upload/image  — requires auth, returns { url }
+api.post('/upload/image', requireAuth, (req, res) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ detail: err.message || 'Upload failed' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ detail: 'No file provided' });
+    }
+    return res.status(200).json({ url: req.file.location });
+  });
 });
 
 // ============== AUTH ENDPOINTS ==============
@@ -455,6 +508,7 @@ api.post('/articles', requireAuth, async (req, res) => {
       [articleId]
     );
 
+    if (status === 'published') cache.delByPrefix('public_articles:');
     return res.status(200).json(formatArticle(rows[0]));
   } catch (err) {
     console.error('[POST /articles]', err);
@@ -510,7 +564,7 @@ api.get('/articles', async (req, res) => {
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
     const [rows] = await pool.query(
-      `SELECT * FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+      `SELECT ${LIST_COLS} FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
       [...params, limitNum, skipNum]
     );
 
@@ -628,6 +682,7 @@ api.put('/articles/:article_id', requireAuth, async (req, res) => {
       [article_id]
     );
 
+    cache.delByPrefix('public_articles:');
     return res.status(200).json(formatArticle(updated[0]));
   } catch (err) {
     console.error('[PUT /articles/:article_id]', err);
@@ -658,6 +713,7 @@ api.delete('/articles/:article_id', requireAuth, async (req, res) => {
 
     await pool.query('DELETE FROM articles WHERE article_id = ?', [article_id]);
     await logAudit('delete', 'article', article_id, article.title, user.user_id, user.name);
+    cache.delByPrefix('public_articles:');
     return res.status(200).json({ message: 'Article deleted' });
   } catch (err) {
     console.error('[DELETE /articles/:article_id]', err);
@@ -682,7 +738,7 @@ api.get('/admin/articles', requireAuth, requireAdmin, async (req, res) => {
     }
 
     const [rows] = await pool.query(
-      `SELECT * FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ?`,
+      `SELECT ${LIST_COLS} FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ?`,
       [...params, limitNum]
     );
 
@@ -717,6 +773,7 @@ api.put(
       );
 
       await logAudit('revoke', 'article', article_id, existing[0].title, req.currentUser.user_id, req.currentUser.name);
+      cache.delByPrefix('public_articles:');
       return res.status(200).json({ message: 'Article revoked' });
     } catch (err) {
       console.error('[PUT /admin/articles/:article_id/revoke]', err);
@@ -841,6 +898,7 @@ api.put('/admin/articles/:id/republish', requireAuth, requireAdmin, async (req, 
     if (rows[0].status !== 'revoked') return res.status(400).json({ detail: 'Only revoked articles can be republished' });
     await pool.query("UPDATE articles SET status = 'published' WHERE article_id = ?", [id]);
     await logAudit('republish', 'article', id, rows[0].title, req.currentUser.user_id, req.currentUser.name);
+    cache.delByPrefix('public_articles:');
     return res.json({ message: 'Article republished' });
   } catch (err) {
     console.error('[PUT /admin/articles/:id/republish]', err);
@@ -857,6 +915,7 @@ api.put('/admin/articles/:id/feature', requireAuth, requireAdmin, async (req, re
     const newVal = rows[0].is_featured ? 0 : 1;
     await pool.query('UPDATE articles SET is_featured = ? WHERE article_id = ?', [newVal, id]);
     await logAudit(newVal ? 'feature' : 'unfeature', 'article', id, rows[0].title, req.currentUser.user_id, req.currentUser.name);
+    cache.delByPrefix('public_articles:');
     return res.json({ is_featured: !!newVal });
   } catch (err) {
     console.error('[PUT /admin/articles/:id/feature]', err);
@@ -873,6 +932,7 @@ api.put('/admin/articles/:id/pin', requireAuth, requireAdmin, async (req, res) =
     const newVal = rows[0].pinned ? 0 : 1;
     await pool.query('UPDATE articles SET pinned = ? WHERE article_id = ?', [newVal, id]);
     await logAudit(newVal ? 'pin' : 'unpin', 'article', id, rows[0].title, req.currentUser.user_id, req.currentUser.name);
+    cache.delByPrefix('public_articles:');
     return res.json({ pinned: !!newVal });
   } catch (err) {
     console.error('[PUT /admin/articles/:id/pin]', err);
@@ -901,6 +961,7 @@ api.post('/admin/articles/bulk', requireAuth, requireAdmin, async (req, res) => 
       await pool.query(`UPDATE articles SET is_featured = 0 WHERE article_id IN (${placeholders})`, ids);
     }
     await logAudit(`bulk_${action}`, 'article', ids.join(','), `${ids.length} articles`, req.currentUser.user_id, req.currentUser.name);
+    cache.delByPrefix('public_articles:');
     return res.json({ message: `Bulk ${action} applied to ${ids.length} article(s)` });
   } catch (err) {
     console.error('[POST /admin/articles/bulk]', err);
@@ -1000,9 +1061,16 @@ api.put('/admin/users/:id/deactivate', requireAuth, requireAdmin, async (req, re
 // GET /api/public/breaking-news
 api.get('/public/breaking-news', async (_req, res) => {
   try {
+    const cached = cache.get('breaking_news');
+    if (cached !== undefined) return res.json(cached);
+
     const [rows] = await pool.query("SELECT value, updated_at FROM settings WHERE `key` = 'breaking_news'");
-    if (rows.length === 0 || !rows[0].value) return res.json({ text: null });
-    return res.json({ text: rows[0].value, updated_at: rows[0].updated_at });
+    const result = (rows.length === 0 || !rows[0].value)
+      ? { text: null }
+      : { text: rows[0].value, updated_at: rows[0].updated_at };
+
+    cache.set('breaking_news', result, TTL.BREAKING_NEWS);
+    return res.json(result);
   } catch (err) {
     console.error('[GET /public/breaking-news]', err);
     return res.status(500).json({ detail: 'Internal server error' });
@@ -1019,6 +1087,7 @@ api.put('/admin/breaking-news', requireAuth, requireAdmin, async (req, res) => {
       [text.trim(), req.currentUser.user_id, text.trim(), req.currentUser.user_id]
     );
     await logAudit('set_breaking_news', 'setting', 'breaking_news', text.trim().slice(0, 60), req.currentUser.user_id, req.currentUser.name);
+    cache.del('breaking_news');
     return res.json({ message: 'Breaking news updated', text: text.trim() });
   } catch (err) {
     console.error('[PUT /admin/breaking-news]', err);
@@ -1031,6 +1100,7 @@ api.delete('/admin/breaking-news', requireAuth, requireAdmin, async (req, res) =
   try {
     await pool.query("UPDATE settings SET value = NULL WHERE `key` = 'breaking_news'");
     await logAudit('clear_breaking_news', 'setting', 'breaking_news', null, req.currentUser.user_id, req.currentUser.name);
+    cache.del('breaking_news');
     return res.json({ message: 'Breaking news cleared' });
   } catch (err) {
     console.error('[DELETE /admin/breaking-news]', err);
@@ -1084,7 +1154,11 @@ api.get('/admin/audit-logs', requireAuth, requireAdmin, async (req, res) => {
 // GET /api/categories  (public)
 api.get('/categories', async (_req, res) => {
   try {
+    const cached = cache.get('categories');
+    if (cached !== undefined) return res.json(cached);
+
     const [rows] = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+    cache.set('categories', rows, TTL.CATEGORIES);
     return res.json(rows);
   } catch (err) {
     console.error('[GET /categories]', err);
@@ -1101,6 +1175,7 @@ api.post('/admin/categories', requireAuth, requireAdmin, async (req, res) => {
     const [existing] = await pool.query('SELECT id FROM categories WHERE id = ?', [slug]);
     if (existing.length > 0) return res.status(409).json({ detail: 'Category ID already exists' });
     await pool.query('INSERT INTO categories (id, name, name_hi) VALUES (?, ?, ?)', [slug, name.trim(), name_hi.trim()]);
+    cache.del('categories');
     return res.status(201).json({ id: slug, name: name.trim(), name_hi: name_hi.trim() });
   } catch (err) {
     console.error('[POST /admin/categories]', err);
@@ -1117,6 +1192,7 @@ api.put('/admin/categories/:id', requireAuth, requireAdmin, async (req, res) => 
     const [existing] = await pool.query('SELECT id FROM categories WHERE id = ?', [id]);
     if (existing.length === 0) return res.status(404).json({ detail: 'Category not found' });
     await pool.query('UPDATE categories SET name = ?, name_hi = ? WHERE id = ?', [name.trim(), name_hi.trim(), id]);
+    cache.del('categories');
     return res.json({ id, name: name.trim(), name_hi: name_hi.trim() });
   } catch (err) {
     console.error('[PUT /admin/categories/:id]', err);
@@ -1132,6 +1208,7 @@ api.delete('/admin/categories/:id', requireAuth, requireAdmin, async (req, res) 
     if (cnt > 0) return res.status(409).json({ detail: `Cannot delete — ${cnt} article(s) use this category` });
     const [result] = await pool.query('DELETE FROM categories WHERE id = ?', [id]);
     if (result.affectedRows === 0) return res.status(404).json({ detail: 'Category not found' });
+    cache.del('categories');
     return res.json({ message: 'Category deleted' });
   } catch (err) {
     console.error('[DELETE /admin/categories/:id]', err);
@@ -1173,6 +1250,16 @@ api.get('/public/articles', async (req, res) => {
       skip = '0',
     } = req.query;
 
+    // Skip cache for search queries — results change with every keystroke
+    const cacheKey = !search
+      ? `public_articles:${JSON.stringify({ category, featured, author_id, limit, skip })}`
+      : null;
+
+    if (cacheKey) {
+      const cached = cache.get(cacheKey);
+      if (cached !== undefined) return res.status(200).json(cached);
+    }
+
     const limitNum = Math.max(1, Math.min(500, parseInt(limit, 10) || 50));
     const skipNum = Math.max(0, parseInt(skip, 10) || 0);
 
@@ -1203,11 +1290,14 @@ api.get('/public/articles', async (req, res) => {
     const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
 
     const [rows] = await pool.query(
-      `SELECT * FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+      `SELECT ${LIST_COLS} FROM articles ${whereSQL} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
       [...params, limitNum, skipNum]
     );
 
-    return res.status(200).json(rows.map(formatArticle));
+    const result = rows.map(formatArticle);
+    if (cacheKey) cache.set(cacheKey, result, TTL.PUBLIC_ARTICLES);
+
+    return res.status(200).json(result);
   } catch (err) {
     console.error('[GET /public/articles]', err);
     return res.status(500).json({ detail: 'Internal server error' });
@@ -1217,7 +1307,11 @@ api.get('/public/articles', async (req, res) => {
 // GET /api/public/categories
 api.get('/public/categories', async (_req, res) => {
   try {
+    const cached = cache.get('categories');
+    if (cached !== undefined) return res.status(200).json({ categories: cached });
+
     const [rows] = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+    cache.set('categories', rows, TTL.CATEGORIES);
     return res.status(200).json({ categories: rows });
   } catch (err) {
     console.error('[GET /public/categories]', err);

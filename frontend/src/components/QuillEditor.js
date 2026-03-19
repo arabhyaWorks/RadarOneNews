@@ -2,12 +2,19 @@ import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
-const QuillEditor = forwardRef(({ value, onChange, placeholder, modules, formats, className = '' }, ref) => {
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const QuillEditor = forwardRef(({ value, onChange, placeholder, modules, formats, className = '', token }, ref) => {
   const containerRef = useRef(null);
   const quillRef = useRef(null);
   const isInitializedRef = useRef(false);
   const onChangeRef = useRef(onChange);
   const lastValueRef = useRef(value);
+  const tokenRef = useRef(token);
+
+  useEffect(() => {
+    tokenRef.current = token;
+  }, [token]);
 
   // Keep the onChange ref updated
   useEffect(() => {
@@ -71,6 +78,40 @@ const QuillEditor = forwardRef(({ value, onChange, placeholder, modules, formats
       });
       
       quillRef.current = quill;
+
+      // Override image handler — upload to S3 instead of base64
+      const toolbar = quill.getModule('toolbar');
+      toolbar.addHandler('image', () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('image', file);
+
+          try {
+            const res = await fetch(`${API}/upload/image`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${tokenRef.current}` },
+              body: formData,
+            });
+
+            if (!res.ok) throw new Error('Upload failed');
+            const { url } = await res.json();
+
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', url, 'user');
+            quill.setSelection(range.index + 1, 0, 'silent');
+          } catch (err) {
+            console.error('[QuillEditor] image upload failed:', err);
+          }
+        };
+      });
 
       // Set initial value
       if (value) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
+import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
 import { ChevronLeft } from 'lucide-react';
@@ -31,9 +32,7 @@ export default function CategoryPage() {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API}/public/articles`, {
-        params: { category, limit: 50 }
-      });
+      const response = await cachedGet(axios, `${API}/public/articles`, { params: { category, limit: 50 } }, 60_000);
       setArticles(response.data);
     } catch (error) {
       console.error('Error fetching articles:', error);

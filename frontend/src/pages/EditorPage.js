@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import { toast } from 'sonner';
-import { Save, Send, ArrowLeft, Image } from 'lucide-react';
+import { Save, Send, ArrowLeft, Image, Upload, X, Loader2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,7 +39,9 @@ export default function EditorPage() {
   
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [confirmPublish, setConfirmPublish] = useState(false);
+  const fileInputRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -122,6 +124,32 @@ export default function EditorPage() {
     }
     
     return { content };
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('image', file);
+
+    setUploading(true);
+    try {
+      const res = await axios.post(`${API}/upload/image`, formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
+      setFormData(prev => ({ ...prev, image_url: res.data.url }));
+      toast.success(isHindi ? 'छवि अपलोड हो गई!' : 'Image uploaded!');
+    } catch (err) {
+      toast.error(isHindi ? 'छवि अपलोड विफल' : 'Image upload failed');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleSubmit = async (status) => {
@@ -276,21 +304,46 @@ export default function EditorPage() {
               </div>
 
               <div>
-                <Label htmlFor="image_url" className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
+                <Label className={`text-gray-700 font-semibold ${isHindi ? 'font-hindi' : ''}`}>
                   {t('imageUrl')}
                 </Label>
-                <div className="relative mt-1">
-                  <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    id="image_url"
-                    name="image_url"
-                    value={formData.image_url}
-                    onChange={handleChange}
-                    placeholder="https://example.com/image.jpg"
-                    className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
-                    data-testid="image-url-input"
-                  />
-                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+                {formData.image_url ? (
+                  <div className="mt-1 relative rounded-sm overflow-hidden border border-gray-200">
+                    <img
+                      src={formData.image_url}
+                      alt="Uploaded"
+                      className="w-full h-28 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, image_url: '' }))}
+                      className="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full p-0.5"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="mt-1 w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 hover:border-[#2a5a5a] rounded-sm py-5 text-gray-400 hover:text-[#2a5a5a] transition-colors disabled:opacity-50"
+                    data-testid="image-upload-btn"
+                  >
+                    {uploading ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" />{isHindi ? 'अपलोड हो रहा है...' : 'Uploading...'}</>
+                    ) : (
+                      <><Upload className="w-5 h-5" />{isHindi ? 'छवि अपलोड करें' : 'Upload Image'}</>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -318,6 +371,7 @@ export default function EditorPage() {
                   onChange={(value) => handleContentChange(value, 'content')}
                   placeholder={isHindi ? 'यहां अपने लेख की सामग्री लिखें...' : 'Write your article content here...'}
                   className="min-h-[500px]"
+                  token={token}
                 />
               </div>
             </div>

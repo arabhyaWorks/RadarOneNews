@@ -4,9 +4,9 @@
 -- Then: node seed.js  (to insert users + articles with proper bcrypt passwords)
 -- ============================================================
 
-DROP DATABASE IF EXISTS samachar;
-CREATE DATABASE samachar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE samachar;
+DROP DATABASE IF EXISTS samachar_group;
+CREATE DATABASE samachar_group CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE samachar_group;
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -128,6 +128,6 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- This will insert users and articles with bcrypt-hashed passwords.
 --
 -- Login credentials after seed:
---   admin@samachar.com    / admin123
---   reporter@samachar.com / reporter123
+--   admin@samachar_group.com    / admin123
+--   reporter@samachar_group.com / reporter123
 -- ============================================================

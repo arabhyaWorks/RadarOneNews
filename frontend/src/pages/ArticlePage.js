@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
+import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { format } from 'date-fns';
 import { Eye, Clock, User, ChevronLeft, Share2, Flame, ChevronRight } from 'lucide-react';
@@ -33,8 +34,8 @@ export default function ArticlePage() {
       setArticle(response.data);
 
       const [relatedRes, latestRes] = await Promise.all([
-        axios.get(`${API}/public/articles`, { params: { category: response.data.category, limit: 5 } }),
-        axios.get(`${API}/public/articles?limit=4`)
+        cachedGet(axios, `${API}/public/articles`, { params: { category: response.data.category, limit: 5 } }, 60_000),
+        cachedGet(axios, `${API}/public/articles`, { params: { limit: 4 } }, 60_000),
       ]);
 
       setRelatedArticles(relatedRes.data.filter(a => a.article_id !== articleId));
@@ -49,7 +50,7 @@ export default function ArticlePage() {
 
   const fetchPopular = async () => {
     try {
-      const res = await axios.get(`${API}/public/articles?limit=50`);
+      const res = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 50 } }, 60_000);
       const sorted = [...res.data]
         .sort((a, b) => b.views - a.views)
         .slice(0, 6);
