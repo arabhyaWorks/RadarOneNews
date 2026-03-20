@@ -55,9 +55,14 @@ module.exports = async (req, res) => {
     }
   }
 
-  // For regular users: serve the React app
-  const indexPath = path.join(process.cwd(), 'build', 'index.html');
-  const html = fs.readFileSync(indexPath, 'utf8');
-  res.setHeader('Content-Type', 'text/html');
-  res.send(html);
+  // For regular users: serve the React app's index.html
+  try {
+    const indexPath = path.join(__dirname, '../../build/index.html');
+    const html = fs.readFileSync(indexPath, 'utf8');
+    res.setHeader('Content-Type', 'text/html');
+    return res.send(html);
+  } catch (e) {
+    // Fallback: redirect to homepage if index.html can't be read
+    res.redirect(302, '/');
+  }
 };
