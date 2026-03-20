@@ -2,5 +2,8 @@
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "CI=false npm run build",
   "outputDirectory": "build",
-  "framework": null
+  "framework": null,
+  "rewrites": [
+    { "source": "/article/:id", "destination": "/api/article/:id" }
+  ]
 }
