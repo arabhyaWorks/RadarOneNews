@@ -6,6 +6,7 @@ import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
 import { ChevronRight, Flame, Eye } from 'lucide-react';
+import branding from '../config/branding';
 import { format } from 'date-fns';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -77,9 +78,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#faf9f6]" data-testid="home-page">
       <Helmet>
-        <title>{isHindi ? 'समाचार ग्रुप | भारत का विश्वसनीय न्यूज़ प्लेटफ़ॉर्म' : 'Samachar Group | India\'s Trusted News Platform'}</title>
-        <meta name="description" content={isHindi ? 'समाचार ग्रुप - ताज़ा खबरें, राजनीति, खेल, व्यापार और मनोरंजन।' : 'Samachar Group - Breaking news, politics, sports, business, and entertainment.'} />
-        <meta property="og:title" content="Samachar Group | India's Trusted News Platform" />
+        <title>{isHindi ? `${branding.nameHi} | ${branding.taglineHi}` : `${branding.name} | ${branding.tagline}`}</title>
+        <meta name="description" content={isHindi ? `${branding.nameHi} - ${branding.descriptionHi}` : `${branding.name} - ${branding.description}`} />
+        <meta property="og:title" content={`${branding.name} | ${branding.tagline}`} />
         <meta property="og:description" content="Latest breaking news and updates across sports, politics, entertainment, business, and technology." />
         <meta property="og:type" content="website" />
       </Helmet>

@@ -17,32 +17,55 @@ const { S3Client } = require('@aws-sdk/client-s3');
 const { pool, initDB } = require('./db');
 const { cache, TTL } = require('./cache');
 
-// ============== S3 SETUP ==============
+// ============== S3 / LOCAL UPLOAD SETUP ==============
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
+const UPLOADS_DIR = path.join(__dirname, 'uploads');
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
-const upload = multer({
-  storage: multerS3({
-    s3,
-    bucket: process.env.S3_BUCKET_NAME,
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: (_req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, `articles/${uuidv4()}${ext}`);
+const useS3 = !!(process.env.S3_BUCKET_NAME && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+
+let upload;
+if (useS3) {
+  const s3 = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
-  fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files are allowed'));
-  },
-});
+  });
+  upload = multer({
+    storage: multerS3({
+      s3,
+      bucket: process.env.S3_BUCKET_NAME,
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      key: (_req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `articles/${uuidv4()}${ext}`);
+      },
+    }),
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) cb(null, true);
+      else cb(new Error('Only image files are allowed'));
+    },
+  });
+} else {
+  // Local disk fallback when AWS is not configured
+  upload = multer({
+    storage: multer.diskStorage({
+      destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+      filename: (_req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `${uuidv4()}${ext}`);
+      },
+    }),
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) cb(null, true);
+      else cb(new Error('Only image files are allowed'));
+    },
+  });
+}
 
 // ============== CONFIGURATION ==============
 
@@ -202,6 +225,36 @@ const LIST_COLS = `article_id, title, title_hi,
   LEFT(content, 600) AS content, LEFT(content_hi, 600) AS content_hi,
   category, image_url, is_featured, pinned, status,
   author_id, author_name, created_at, updated_at, views`;
+
+// ============== GAMIFICATION ==============
+
+async function rewardUserForPublish(user_id) {
+  try {
+    const query = `
+      UPDATE users 
+      SET 
+        score = score + 50 + IF(DATEDIFF(CURDATE(), last_publish_date) = 1, 10, 0),
+        current_streak = CASE 
+          WHEN last_publish_date IS NULL THEN 1
+          WHEN DATEDIFF(CURDATE(), last_publish_date) = 1 THEN current_streak + 1
+          WHEN DATEDIFF(CURDATE(), last_publish_date) = 0 THEN current_streak
+          ELSE 1 
+        END,
+        longest_streak = GREATEST(longest_streak, CASE
+          WHEN last_publish_date IS NULL THEN 1
+          WHEN DATEDIFF(CURDATE(), last_publish_date) = 1 THEN current_streak
+          WHEN DATEDIFF(CURDATE(), last_publish_date) = 0 THEN current_streak
+          ELSE 1
+        END),
+        last_publish_date = CURDATE()
+      WHERE user_id = ?;
+    `;
+    await pool.query(query, [user_id]);
+    cache.del('leaderboard');
+  } catch (err) {
+    console.error('[rewardUserForPublish]', err);
+  }
+}
 
 // ============== ROUTER ==============
 
@@ -429,6 +482,9 @@ api.get('/auth/me', requireAuth, (req, res) => {
     role: user.role,
     status: user.status,
     picture: user.picture || null,
+    score: user.score || 0,
+    current_streak: user.current_streak || 0,
+    longest_streak: user.longest_streak || 0,
   });
 });
 
@@ -508,7 +564,10 @@ api.post('/articles', requireAuth, async (req, res) => {
       [articleId]
     );
 
-    if (status === 'published') cache.delByPrefix('public_articles:');
+    if (status === 'published') {
+      cache.delByPrefix('public_articles:');
+      await rewardUserForPublish(user.user_id);
+    }
     return res.status(200).json(formatArticle(rows[0]));
   } catch (err) {
     console.error('[POST /articles]', err);
@@ -681,6 +740,10 @@ api.put('/articles/:article_id', requireAuth, async (req, res) => {
       'SELECT * FROM articles WHERE article_id = ? LIMIT 1',
       [article_id]
     );
+
+    if (article.status !== 'published' && req.body.status === 'published') {
+      await rewardUserForPublish(article.author_id);
+    }
 
     cache.delByPrefix('public_articles:');
     return res.status(200).json(formatArticle(updated[0]));
@@ -910,10 +973,15 @@ api.put('/admin/articles/:id/republish', requireAuth, requireAdmin, async (req, 
 api.put('/admin/articles/:id/feature', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query('SELECT title, is_featured FROM articles WHERE article_id = ?', [id]);
+    const [rows] = await pool.query('SELECT title, is_featured, author_id FROM articles WHERE article_id = ?', [id]);
     if (rows.length === 0) return res.status(404).json({ detail: 'Article not found' });
     const newVal = rows[0].is_featured ? 0 : 1;
     await pool.query('UPDATE articles SET is_featured = ? WHERE article_id = ?', [newVal, id]);
+    
+    if (newVal === 1) {
+      await pool.query('UPDATE users SET score = score + 20 WHERE user_id = ?', [rows[0].author_id]);
+    }
+    
     await logAudit(newVal ? 'feature' : 'unfeature', 'article', id, rows[0].title, req.currentUser.user_id, req.currentUser.name);
     cache.delByPrefix('public_articles:');
     return res.json({ is_featured: !!newVal });
@@ -1223,7 +1291,7 @@ api.get('/public/authors/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const [users] = await pool.query(
-      'SELECT user_id, name, role, picture FROM users WHERE user_id = ? AND status = "approved" LIMIT 1',
+      'SELECT user_id, name, role, picture, score, current_streak, longest_streak FROM users WHERE user_id = ? AND status = "approved" LIMIT 1',
       [id]
     );
 
@@ -1300,6 +1368,33 @@ api.get('/public/articles', async (req, res) => {
     return res.status(200).json(result);
   } catch (err) {
     console.error('[GET /public/articles]', err);
+    return res.status(500).json({ detail: 'Internal server error' });
+  }
+});
+
+// GET /api/public/leaderboard
+api.get('/public/leaderboard', async (_req, res) => {
+  try {
+    const cached = cache.get('leaderboard');
+    if (cached !== undefined) return res.status(200).json(cached);
+
+    const [rows] = await pool.query(`
+      SELECT user_id, name, picture, score, current_streak, longest_streak 
+      FROM users 
+      WHERE role IN ('reporter', 'admin') AND is_active = 1
+      ORDER BY score DESC, current_streak DESC, name ASC
+      LIMIT 100
+    `);
+
+    const leaderboard = rows.map((user, index) => ({
+      ...user,
+      rank: index + 1
+    }));
+
+    cache.set('leaderboard', leaderboard, TTL.CATEGORIES || 60000); // 60s cache
+    return res.status(200).json(leaderboard);
+  } catch (err) {
+    console.error('[GET /public/leaderboard]', err);
     return res.status(500).json({ detail: 'Internal server error' });
   }
 });

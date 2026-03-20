@@ -2,8 +2,8 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-export const ProtectedRoute = ({ children, adminOnly = false }) => {
-  const { isAuthenticated, isAdmin, loading, user } = useAuth();
+export const ProtectedRoute = ({ children, adminOnly = false, reporterOnly = false }) => {
+  const { isAuthenticated, isAdmin, isReporter, loading } = useAuth();
   const location = useLocation();
 
   // If user data was passed from AuthCallback, skip loading state
@@ -30,6 +30,10 @@ export const ProtectedRoute = ({ children, adminOnly = false }) => {
 
   if (adminOnly && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  if (reporterOnly && !isReporter) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

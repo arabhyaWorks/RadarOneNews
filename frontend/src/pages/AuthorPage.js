@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
-import { ChevronLeft, User } from 'lucide-react';
+import { ChevronLeft, User, Star, Flame } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -66,6 +66,16 @@ export default function AuthorPage() {
             <p className="text-white/80 mt-2">
               {articles.length} {isHindi ? 'प्रकाशित समाचार' : 'Articles Published'}
             </p>
+            <div className="flex items-center gap-3 mt-4">
+              <div className="flex items-center gap-1 bg-yellow-400/20 text-yellow-400 px-3 py-1 rounded-full border border-yellow-400/30 font-bold">
+                <Star className="w-4 h-4 fill-current" />
+                <span>{author?.score || 0}</span>
+              </div>
+              <div className={`flex items-center gap-1 px-3 py-1 rounded-full border font-bold ${ (author?.current_streak || 0) > 0 ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' : 'bg-gray-500/20 text-gray-400 border-gray-500/30'}`}>
+                <Flame className={`w-4 h-4 ${ (author?.current_streak || 0) > 0 ? 'fill-current' : ''}`} />
+                <span>{author?.current_streak || 0} {isHindi ? 'दिन' : 'Days'}</span>
+              </div>
+            </div>
           </div>
         </div>
 

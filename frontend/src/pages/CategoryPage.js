@@ -6,6 +6,7 @@ import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { NewsCard, NewsCardSkeleton } from '../components/news/NewsCard';
 import { ChevronLeft } from 'lucide-react';
+import branding from '../config/branding';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -47,9 +48,9 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen bg-[#faf9f6]" data-testid="category-page">
       <Helmet>
-        <title>{`${categoryName} ${isHindi ? 'समाचार' : 'News'} | Samachar Group`}</title>
+        <title>{`${categoryName} ${isHindi ? 'समाचार' : 'News'} | ${isHindi ? branding.nameHi : branding.name}`}</title>
         <meta name="description" content={isHindi ? `${categoryName} की नवीनतम खबरें और अपडेट।` : `Read the latest ${categoryName} news, updates, and analysis.`} />
-        <meta property="og:title" content={`${categoryName} News | Samachar Group`} />
+        <meta property="og:title" content={`${categoryName} News | ${branding.name}`} />
         {categoryImage && <meta property="og:image" content={categoryImage} />}
       </Helmet>
 

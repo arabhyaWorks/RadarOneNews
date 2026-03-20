@@ -6,6 +6,7 @@ import { cachedGet } from '../lib/apiCache';
 import { useLanguage } from '../contexts/LanguageContext';
 import { format } from 'date-fns';
 import { Eye, Clock, User, ChevronLeft, Share2, Flame, ChevronRight } from 'lucide-react';
+import branding from '../config/branding';
 import { Button } from '../components/ui/button';
 import { NewsCard } from '../components/news/NewsCard';
 import { toast } from 'sonner';
@@ -122,7 +123,7 @@ export default function ArticlePage() {
   return (
     <div className="min-h-screen bg-[#faf9f6]" data-testid="article-page">
       <Helmet>
-        <title>{`${title} | ${isHindi ? 'समाचार ग्रुप' : 'Samachar Group'}`}</title>
+        <title>{`${title} | ${isHindi ? branding.nameHi : branding.name}`}</title>
         <meta name="description" content={seoDescription} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={seoDescription} />

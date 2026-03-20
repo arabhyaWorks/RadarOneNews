@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { Button } from '../components/ui/button';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { FileText, Eye, Edit, Trash2, Plus, Send, Clock, XCircle } from 'lucide-react';
+import { FileText, Eye, Edit, Trash2, Plus, Send, Clock, XCircle, Star, Flame, Trophy } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +21,7 @@ import {
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function DashboardPage() {
-  const { user, token } = useAuth();
+  const { user, token, refreshUser } = useAuth();
   const { t, isHindi } = useLanguage();
   const navigate = useNavigate();
   
@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
+    refreshUser();
     fetchArticles();
   }, [filter]);
 
@@ -169,8 +170,24 @@ export default function DashboardPage() {
 
         {/* Stats */}
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
-          <div className="stat-card !p-3 md:!p-6" data-testid="stat-total">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-6 md:mb-8">
+          <div className="stat-card !p-3 md:!p-6 border-b-4 border-yellow-400">
+            <div className="flex flex-col items-center justify-center text-center">
+              <Star className="w-5 h-5 md:w-6 md:h-6 text-yellow-500 mb-1" />
+              <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold tracking-wider">{isHindi ? 'स्कोर' : 'Score'}</p>
+              <p className="text-xl md:text-2xl font-black text-gray-900">{user?.score || 0}</p>
+            </div>
+          </div>
+
+          <div className="stat-card !p-3 md:!p-6 border-b-4 border-orange-500">
+            <div className="flex flex-col items-center justify-center text-center">
+              <Flame className={`w-5 h-5 md:w-6 md:h-6 mb-1 ${(user?.current_streak || 0) > 0 ? 'text-orange-500 animate-pulse' : 'text-gray-300'}`} />
+              <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold tracking-wider">{isHindi ? 'स्ट्रीक' : 'Streak'}</p>
+              <p className="text-xl md:text-2xl font-black text-gray-900">{user?.current_streak || 0}</p>
+            </div>
+          </div>
+
+          <div className="stat-card !p-3 md:!p-6">
             <div className="flex items-center gap-2 md:gap-4">
               <div className="w-8 h-8 md:w-12 md:h-12 bg-[#2a5a5a]/10 rounded flex items-center justify-center shrink-0">
                 <FileText className="w-4 h-4 md:w-6 md:h-6 text-[#2a5a5a]" />

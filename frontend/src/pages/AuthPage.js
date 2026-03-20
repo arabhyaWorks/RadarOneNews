@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import branding from '../config/branding';
 
 export default function AuthPage({ mode = 'login' }) {
   const { login, register, loginWithGoogle } = useAuth();
@@ -73,7 +74,7 @@ export default function AuthPage({ mode = 'login' }) {
             </div>
             <div>
               <h1 className={`text-2xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
-                {isHindi ? 'समाचार ग्रुप' : 'Samachar Group'}
+                {isHindi ? branding.nameHi : branding.name}
               </h1>
             </div>
           </div>
@@ -236,7 +237,7 @@ export default function AuthPage({ mode = 'login' }) {
               <div className="w-12 h-12 bg-[#f4c430] rounded-full" />
             </div>
             <h2 className={`text-4xl font-bold mb-4 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
-              {isHindi ? 'समाचार ग्रुप' : 'Samachar Group'}
+              {isHindi ? branding.nameHi : branding.name}
             </h2>
             <p className={`text-xl text-white/80 max-w-md mx-auto ${isHindi ? 'font-hindi' : ''}`}>
               {isHindi 

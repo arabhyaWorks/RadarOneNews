@@ -85,6 +85,22 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    const storedToken = localStorage.getItem('token');
+    if (!storedToken) return null;
+    try {
+      const response = await axios.get(`${API}/auth/me`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+        withCredentials: true
+      });
+      setUser(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Refresh user failed:', error);
+      return null;
+    }
+  };
+
   const value = {
     user,
     token,
@@ -94,6 +110,7 @@ export const AuthProvider = ({ children }) => {
     loginWithGoogle,
     handleGoogleCallback,
     logout,
+    refreshUser,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isReporter: user?.role === 'reporter' || user?.role === 'admin'

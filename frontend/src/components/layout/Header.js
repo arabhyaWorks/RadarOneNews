@@ -10,13 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Menu, X, Search, LogOut, FileText, Settings, Globe, Radio } from 'lucide-react';
+import { Menu, X, Search, LogOut, FileText, Settings, Globe, Radio, Trophy } from 'lucide-react';
 import axios from 'axios';
+import branding from '../../config/branding';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const Header = () => {
-  const { user, logout, isAuthenticated, isAdmin } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin, isReporter } = useAuth();
   const { t, language, toggleLanguage, isHindi } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,7 +103,7 @@ export const Header = () => {
               </div>
               <div>
                 <h1 className={`text-2xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
-                  {isHindi ? 'समाचार ग्रुप' : 'Samachar Group'}
+                  {isHindi ? branding.nameHi : branding.name}
                 </h1>
                 <p className={`text-xs text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>
                   {t('tagline')}
@@ -204,6 +205,15 @@ export const Header = () => {
       <nav className="bg-[#faf9f6] border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="hidden md:flex items-center gap-1 py-2 overflow-x-auto">
+            {isReporter && (
+              <Link
+                to="/leaderboard"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-100 text-[#2a5a5a] font-bold text-sm hover:bg-[#f4c430] transition-colors mr-2 ${isHindi ? 'font-hindi' : ''}`}
+              >
+                <Trophy className="w-4 h-4" />
+                {isHindi ? 'लीडरबोर्ड' : 'Leaderboard'}
+              </Link>
+            )}
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -251,6 +261,16 @@ export const Header = () => {
             <h3 className="font-semibold text-gray-500 uppercase text-xs tracking-wider mb-3">
               {isHindi ? 'श्रेणियां' : 'Categories'}
             </h3>
+            {isReporter && (
+              <Link
+                to="/leaderboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 py-2 px-3 bg-yellow-50 text-[#2a5a5a] font-bold rounded mb-2 ${isHindi ? 'font-hindi' : ''}`}
+              >
+                <Trophy className="w-5 h-5 text-[#f4c430]" />
+                {isHindi ? 'लीडरबोर्ड' : 'Leaderboard'}
+              </Link>
+            )}
             {categories.map((cat) => (
               <Link
                 key={cat.id}
