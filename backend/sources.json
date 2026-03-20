@@ -551,6 +551,96 @@
       "source": "TV9 Hindi",
       "language": "hi",
       "category": "general"
+    },
+    {
+      "url": "https://www.news18.com/commonfeeds/v1/eng/rss/india.xml",
+      "source": "News18 India",
+      "language": "en",
+      "category": "national"
+    },
+    {
+      "url": "https://www.news18.com/commonfeeds/v1/eng/rss/business/business.xml",
+      "source": "News18 India",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://www.news18.com/commonfeeds/v1/eng/rss/sports/sports.xml",
+      "source": "News18 India",
+      "language": "en",
+      "category": "sports"
+    },
+    {
+      "url": "https://www.news18.com/commonfeeds/v1/eng/rss/tech/tech.xml",
+      "source": "News18 India",
+      "language": "en",
+      "category": "technology"
+    },
+    {
+      "url": "https://indianexpress.com/feed/",
+      "source": "Indian Express",
+      "language": "en",
+      "category": "national"
+    },
+    {
+      "url": "https://indianexpress.com/section/cities/lucknow/feed/",
+      "source": "Indian Express",
+      "language": "en",
+      "category": "local"
+    },
+    {
+      "url": "https://indianexpress.com/section/business/feed/",
+      "source": "Indian Express",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://indianexpress.com/section/sports/feed/",
+      "source": "Indian Express",
+      "language": "en",
+      "category": "sports"
+    },
+    {
+      "url": "https://indianexpress.com/section/technology/feed/",
+      "source": "Indian Express",
+      "language": "en",
+      "category": "technology"
+    },
+    {
+      "url": "https://www.livemint.com/rss/news",
+      "source": "Livemint",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://www.livemint.com/rss/markets",
+      "source": "Livemint",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://www.livemint.com/rss/technology",
+      "source": "Livemint",
+      "language": "en",
+      "category": "technology"
+    },
+    {
+      "url": "https://www.business-standard.com/rss/home_page_top_stories.rss",
+      "source": "Business Standard",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://www.business-standard.com/rss/economy-policy-10301.rss",
+      "source": "Business Standard",
+      "language": "en",
+      "category": "business"
+    },
+    {
+      "url": "https://www.business-standard.com/rss/technology-10304.rss",
+      "source": "Business Standard",
+      "language": "en",
+      "category": "technology"
     }
   ]
 }
