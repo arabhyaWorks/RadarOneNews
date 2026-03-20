@@ -223,7 +223,7 @@ function requireAdmin(req, res, next) {
 // just to render card previews (cards only show ~3 lines of plain text)
 const LIST_COLS = `article_id, title, title_hi,
   LEFT(content, 600) AS content, LEFT(content_hi, 600) AS content_hi,
-  category, image_url, is_featured, pinned, status,
+  category, image_url, source_name, is_featured, pinned, status,
   author_id, author_name, created_at, updated_at, views`;
 
 // ============== GAMIFICATION ==============
@@ -1434,6 +1434,7 @@ function formatArticle(row) {
     content_hi: row.content_hi || null,
     category: row.category,
     image_url: row.image_url || null,
+    source_name: row.source_name || null,
     is_featured: row.is_featured === 1 || row.is_featured === true,
     pinned: row.pinned === 1 || row.pinned === true,
     status: row.status,

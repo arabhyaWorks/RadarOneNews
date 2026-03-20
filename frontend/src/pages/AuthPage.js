@@ -8,6 +8,7 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import branding from '../config/branding';
+import logo from '../logo.png';
 
 export default function AuthPage({ mode = 'login' }) {
   const { login, register, loginWithGoogle } = useAuth();
@@ -69,11 +70,9 @@ export default function AuthPage({ mode = 'login' }) {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-[#2a5a5a] rounded-full flex items-center justify-center border-2 border-red-600">
-              <div className="w-6 h-6 bg-[#f4c430] rounded-full" />
-            </div>
+            <img src={logo} alt={branding.name} className="w-12 h-12 rounded-full object-cover" />
             <div>
-              <h1 className={`text-2xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+              <h1 className={`text-2xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                 {isHindi ? branding.nameHi : branding.name}
               </h1>
             </div>
@@ -98,7 +97,7 @@ export default function AuthPage({ mode = 'login' }) {
             type="button"
             variant="outline"
             onClick={handleGoogleLogin}
-            className="w-full mb-6 py-6 border-gray-300 hover:border-[#2a5a5a] hover:bg-gray-50"
+            className="w-full mb-6 py-6 border-gray-300 hover:border-[#b91c1c] hover:bg-gray-50"
             data-testid="google-login-btn"
           >
             <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -138,7 +137,7 @@ export default function AuthPage({ mode = 'login' }) {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder={isHindi ? 'अपना नाम दर्ज करें' : 'Enter your name'}
-                    className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
+                    className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#b91c1c] focus:ring-[#b91c1c]"
                     required
                     data-testid="name-input"
                   />
@@ -159,7 +158,7 @@ export default function AuthPage({ mode = 'login' }) {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder={isHindi ? 'अपना ईमेल दर्ज करें' : 'Enter your email'}
-                  className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
+                  className="pl-10 py-6 rounded-sm border-gray-300 focus:border-[#b91c1c] focus:ring-[#b91c1c]"
                   required
                   data-testid="email-input"
                 />
@@ -179,7 +178,7 @@ export default function AuthPage({ mode = 'login' }) {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder={isHindi ? 'अपना पासवर्ड दर्ज करें' : 'Enter your password'}
-                  className="pl-10 pr-10 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a]"
+                  className="pl-10 pr-10 py-6 rounded-sm border-gray-300 focus:border-[#b91c1c] focus:ring-[#b91c1c]"
                   required
                   data-testid="password-input"
                 />
@@ -200,7 +199,7 @@ export default function AuthPage({ mode = 'login' }) {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-6 bg-[#2a5a5a] hover:bg-[#1f4444] text-white font-bold uppercase tracking-wider rounded-sm"
+              className="w-full py-6 bg-[#b91c1c] hover:bg-[#991b1b] text-white font-bold uppercase tracking-wider rounded-sm"
               data-testid="submit-btn"
             >
               {loading 
@@ -215,7 +214,7 @@ export default function AuthPage({ mode = 'login' }) {
             {mode === 'login' ? t('noAccount') : t('hasAccount')}{' '}
             <Link 
               to={mode === 'login' ? '/signup' : '/login'}
-              className="text-[#2a5a5a] font-semibold hover:text-[#f4c430] transition-colors"
+              className="text-[#b91c1c] font-semibold hover:text-[#f4c430] transition-colors"
               data-testid="switch-mode-link"
             >
               {mode === 'login' ? t('signup') : t('login')}
@@ -226,16 +225,14 @@ export default function AuthPage({ mode = 'login' }) {
 
       {/* Right Side - Image */}
       <div className="hidden lg:block lg:w-1/2 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d]">
           <div className="absolute inset-0 opacity-10" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }} />
         </div>
         <div className="relative h-full flex items-center justify-center p-12">
           <div className="text-center text-white">
-            <div className="w-24 h-24 mx-auto mb-8 bg-white rounded-full flex items-center justify-center border-4 border-red-600">
-              <div className="w-12 h-12 bg-[#f4c430] rounded-full" />
-            </div>
+            <img src={logo} alt={branding.name} className="w-24 h-24 mx-auto mb-8 rounded-full object-cover border-4 border-white/30" />
             <h2 className={`text-4xl font-bold mb-4 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {isHindi ? branding.nameHi : branding.name}
             </h2>

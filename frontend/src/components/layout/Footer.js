@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { Newspaper, MapPin, Phone, Mail, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react';
 import branding from '../../config/branding';
+import logo from '../../logo.png';
 
 export const Footer = () => {
   const { t, isHindi } = useLanguage();
@@ -44,11 +45,7 @@ export const Footer = () => {
           <div className="col-span-2 md:col-span-4 md:mb-0">
             {/* Logo */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="relative w-11 h-11 flex-shrink-0">
-                <div className="w-11 h-11 rounded-full bg-white/10 border-2 border-[#f4c430] flex items-center justify-center">
-                  <Newspaper className="w-5 h-5 text-[#f4c430]" />
-                </div>
-              </div>
+              <img src={logo} alt={branding.name} className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
               <div>
                 <h3 className={`text-xl font-bold text-white leading-none ${headFont}`}>
                   {isHindi ? branding.nameHi : branding.name}

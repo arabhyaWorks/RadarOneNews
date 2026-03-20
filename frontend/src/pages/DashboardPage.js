@@ -118,7 +118,7 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className={`text-2xl md:text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h1 className={`text-2xl md:text-3xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {t('dashboard')}
             </h1>
             <p className={`text-sm md:text-base text-gray-600 mt-0.5 md:mt-1 ${isHindi ? 'font-hindi' : ''}`}>
@@ -126,7 +126,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link to="/editor">
-            <Button className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold" data-testid="new-article-btn">
+            <Button className="bg-[#f4c430] text-[#b91c1c] hover:bg-[#e0b020] font-bold" data-testid="new-article-btn">
               <Plus className="w-4 h-4 mr-1 md:mr-2" />
               <span className="hidden sm:inline">{t('writeArticle')}</span>
               <span className="sm:hidden">{isHindi ? 'लिखें' : 'Write'}</span>
@@ -189,12 +189,12 @@ export default function DashboardPage() {
 
           <div className="stat-card !p-3 md:!p-6">
             <div className="flex items-center gap-2 md:gap-4">
-              <div className="w-8 h-8 md:w-12 md:h-12 bg-[#2a5a5a]/10 rounded flex items-center justify-center shrink-0">
-                <FileText className="w-4 h-4 md:w-6 md:h-6 text-[#2a5a5a]" />
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-[#b91c1c]/10 rounded flex items-center justify-center shrink-0">
+                <FileText className="w-4 h-4 md:w-6 md:h-6 text-[#b91c1c]" />
               </div>
               <div className="min-w-0">
                 <p className={`text-xs md:text-sm text-gray-500 leading-tight md:leading-normal truncate ${isHindi ? 'font-hindi' : ''}`}>{t('totalArticles')}</p>
-                <p className="text-xl md:text-2xl font-bold text-[#2a5a5a] leading-none mt-0.5 md:mt-0">{stats.total}</p>
+                <p className="text-xl md:text-2xl font-bold text-[#b91c1c] leading-none mt-0.5 md:mt-0">{stats.total}</p>
               </div>
             </div>
           </div>
@@ -244,8 +244,8 @@ export default function DashboardPage() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors ${
                 filter === f 
-                  ? 'text-[#2a5a5a] border-b-2 border-[#2a5a5a]' 
-                  : 'text-gray-500 hover:text-[#2a5a5a]'
+                  ? 'text-[#b91c1c] border-b-2 border-[#b91c1c]' 
+                  : 'text-gray-500 hover:text-[#b91c1c]'
               }`}
               data-testid={`filter-${f}`}
             >
@@ -270,7 +270,7 @@ export default function DashboardPage() {
                 {isHindi ? 'कोई लेख नहीं मिला' : 'No articles found'}
               </p>
               <Link to="/editor">
-                <Button className="mt-4 bg-[#2a5a5a] hover:bg-[#1f4444] text-white">
+                <Button className="mt-4 bg-[#b91c1c] hover:bg-[#991b1b] text-white">
                   {t('writeArticle')}
                 </Button>
               </Link>
@@ -311,12 +311,12 @@ export default function DashboardPage() {
                         <td>
                           <div className="flex items-center gap-2">
                             <Link to={`/article/${article.article_id}`}>
-                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
+                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#b91c1c]">
                                 <Eye className="w-4 h-4" />
                               </Button>
                             </Link>
                             <Link to={`/editor/${article.article_id}`}>
-                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a]">
+                              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#b91c1c]">
                                 <Edit className="w-4 h-4" />
                               </Button>
                             </Link>

@@ -50,7 +50,7 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-[#faf9f6]" data-testid="search-page">
       {/* Search Header */}
-      <div className="bg-[#2a5a5a] py-12">
+      <div className="bg-[#b91c1c] py-12">
         <div className="max-w-3xl mx-auto px-4">
           <Link 
             to="/"

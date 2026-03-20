@@ -205,7 +205,7 @@ export default function EditorPage() {
     return (
       <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center">
         <div className="animate-pulse text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-[#2a5a5a] rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-[#b91c1c] rounded-full flex items-center justify-center">
             <div className="w-8 h-8 bg-[#f4c430] rounded-full" />
           </div>
           <p className="text-gray-600">{isHindi ? 'लोड हो रहा है...' : 'Loading...'}</p>
@@ -224,12 +224,12 @@ export default function EditorPage() {
             <Button 
               variant="ghost" 
               onClick={() => navigate('/dashboard')}
-              className="text-gray-600 hover:text-[#2a5a5a] px-2 -ml-2 sm:-ml-0"
+              className="text-gray-600 hover:text-[#b91c1c] px-2 -ml-2 sm:-ml-0"
               data-testid="back-btn"
             >
               <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
-            <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {isEditing 
                 ? (isHindi ? 'लेख संपादित करें' : 'Edit Article')
                 : t('writeArticle')
@@ -242,7 +242,7 @@ export default function EditorPage() {
               variant="outline"
               onClick={() => handleSubmit('draft')}
               disabled={saving}
-              className="flex-1 sm:flex-none justify-center border-[#2a5a5a] text-[#2a5a5a] hover:bg-[#2a5a5a] hover:text-white px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
+              className="flex-1 sm:flex-none justify-center border-[#b91c1c] text-[#b91c1c] hover:bg-[#b91c1c] hover:text-white px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
               data-testid="save-draft-btn"
             >
               <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 shrink-0" />
@@ -252,7 +252,7 @@ export default function EditorPage() {
               onClick={() => setConfirmPublish(true)}
               disabled={saving || !isApproved}
               title={!isApproved ? (isHindi ? 'प्रकाशित करने के लिए एडमिन अनुमोदन आवश्यक है' : 'Admin approval required to publish') : ''}
-              className="flex-1 sm:flex-none justify-center bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
+              className="flex-1 sm:flex-none justify-center bg-[#f4c430] text-[#b91c1c] hover:bg-[#e0b020] font-bold disabled:opacity-50 disabled:cursor-not-allowed px-3 py-2 h-auto text-sm sm:text-base whitespace-nowrap"
               data-testid="publish-btn"
             >
               <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 shrink-0" />
@@ -275,7 +275,7 @@ export default function EditorPage() {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder={isHindi ? 'शीर्षक दर्ज करें' : 'Enter article title'}
-                className="mt-1 py-6 rounded-sm border-gray-300 focus:border-[#2a5a5a] focus:ring-[#2a5a5a] font-heading text-xl"
+                className="mt-1 py-6 rounded-sm border-gray-300 focus:border-[#b91c1c] focus:ring-[#b91c1c] font-heading text-xl"
                 data-testid="title-input"
               />
             </div>
@@ -334,7 +334,7 @@ export default function EditorPage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading}
-                    className="mt-1 w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 hover:border-[#2a5a5a] rounded-sm py-5 text-gray-400 hover:text-[#2a5a5a] transition-colors disabled:opacity-50"
+                    className="mt-1 w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 hover:border-[#b91c1c] rounded-sm py-5 text-gray-400 hover:text-[#b91c1c] transition-colors disabled:opacity-50"
                     data-testid="image-upload-btn"
                   >
                     {uploading ? (
@@ -396,7 +396,7 @@ export default function EditorPage() {
                       />
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gradient-to-tr from-[#2a5a5a] to-[#1a3a3a] flex items-center justify-center text-white/50 text-sm">
+                    <div className="w-full h-48 bg-gradient-to-tr from-[#b91c1c] to-[#7f1d1d] flex items-center justify-center text-white/50 text-sm">
                       Hero Image Placeholder
                     </div>
                   )}
@@ -458,7 +458,7 @@ export default function EditorPage() {
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={() => { setConfirmPublish(false); handleSubmit('published'); }}
-            className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold"
+            className="bg-[#f4c430] text-[#b91c1c] hover:bg-[#e0b020] font-bold"
           >
             {isHindi ? 'प्रकाशित करें' : 'Publish'}
           </AlertDialogAction>

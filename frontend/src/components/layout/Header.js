@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../../logo.png';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Button } from '../ui/button';
@@ -55,7 +56,7 @@ export const Header = () => {
     <>
     <header className="sticky-header border-b border-gray-200 shadow-sm relative">
       {/* Top Bar */}
-      <div className="bg-[#2a5a5a] text-white py-2">
+      <div className="bg-[#b91c1c] text-white py-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
           <span className={isHindi ? 'font-hindi' : ''}>
             {new Date().toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', { 
@@ -76,33 +77,15 @@ export const Header = () => {
         </div>
       </div>
 
-      {/* Breaking News Ticker */}
-      {breakingNews && (
-        <div className="bg-red-600 text-white py-1.5 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 flex items-center gap-3">
-            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shrink-0 bg-white text-red-600 px-2 py-0.5 rounded">
-              <Radio className="w-3 h-3" />{isHindi ? 'ब्रेकिंग' : 'Breaking'}
-            </span>
-            <div className="overflow-hidden flex-1">
-              <p className={`animate-marquee whitespace-nowrap text-sm font-semibold ${isHindi ? 'font-hindi' : ''}`}>
-                {breakingNews}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Header */}
       <div className="bg-white py-4">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3" data-testid="logo-link">
-              <div className="w-12 h-12 bg-[#2a5a5a] rounded-full flex items-center justify-center border-2 border-red-600">
-                <div className="w-6 h-6 bg-[#f4c430] rounded-full" />
-              </div>
+              <img src={logo} alt={branding.name} className="w-12 h-12 rounded-full object-cover" />
               <div>
-                <h1 className={`text-2xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                <h1 className={`text-2xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                   {isHindi ? branding.nameHi : branding.name}
                 </h1>
                 <p className={`text-xs text-gray-500 ${isHindi ? 'font-hindi' : ''}`}>
@@ -119,7 +102,7 @@ export const Header = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('search')}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-[#2a5a5a] focus:ring-1 focus:ring-[#2a5a5a] outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-[#b91c1c] focus:ring-1 focus:ring-[#b91c1c] outline-none transition-all"
                   data-testid="search-input"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -135,7 +118,7 @@ export const Header = () => {
                       {user?.picture ? (
                         <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full" />
                       ) : (
-                        <div className="w-8 h-8 bg-[#2a5a5a] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        <div className="w-8 h-8 bg-[#b91c1c] rounded-full flex items-center justify-center text-white text-sm font-bold">
                           {user?.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -176,12 +159,12 @@ export const Header = () => {
               ) : (
                 <>
                   <Link to="/login">
-                    <Button variant="outline" className="border-[#2a5a5a] text-[#2a5a5a] hover:bg-[#2a5a5a] hover:text-white" data-testid="login-btn">
+                    <Button variant="outline" className="border-[#b91c1c] text-[#b91c1c] hover:bg-[#b91c1c] hover:text-white" data-testid="login-btn">
                       {t('login')}
                     </Button>
                   </Link>
                   <Link to="/signup">
-                    <Button className="bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold" data-testid="signup-btn">
+                    <Button className="bg-[#f4c430] text-[#b91c1c] hover:bg-[#e0b020] font-bold" data-testid="signup-btn">
                       {t('signup')}
                     </Button>
                   </Link>
@@ -205,15 +188,6 @@ export const Header = () => {
       <nav className="bg-[#faf9f6] border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="hidden md:flex items-center gap-1 py-2 overflow-x-auto">
-            {isReporter && (
-              <Link
-                to="/leaderboard"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-yellow-100 text-[#2a5a5a] font-bold text-sm hover:bg-[#f4c430] transition-colors mr-2 ${isHindi ? 'font-hindi' : ''}`}
-              >
-                <Trophy className="w-4 h-4" />
-                {isHindi ? 'लीडरबोर्ड' : 'Leaderboard'}
-              </Link>
-            )}
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -227,6 +201,22 @@ export const Header = () => {
           </div>
         </div>
       </nav>
+
+      {/* Breaking News Ticker */}
+      {breakingNews && (
+        <div className="bg-red-600 text-white py-1.5 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 flex items-center gap-3">
+            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider shrink-0 bg-white text-red-600 px-2 py-0.5 rounded">
+              <Radio className="w-3 h-3" />{isHindi ? 'ब्रेकिंग' : 'Breaking'}
+            </span>
+            <div className="overflow-hidden flex-1">
+              <p className={`animate-marquee whitespace-nowrap text-sm font-semibold ${isHindi ? 'font-hindi' : ''}`}>
+                {breakingNews}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </header>
 
@@ -261,16 +251,6 @@ export const Header = () => {
             <h3 className="font-semibold text-gray-500 uppercase text-xs tracking-wider mb-3">
               {isHindi ? 'श्रेणियां' : 'Categories'}
             </h3>
-            {isReporter && (
-              <Link
-                to="/leaderboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-2 py-2 px-3 bg-yellow-50 text-[#2a5a5a] font-bold rounded mb-2 ${isHindi ? 'font-hindi' : ''}`}
-              >
-                <Trophy className="w-5 h-5 text-[#f4c430]" />
-                {isHindi ? 'लीडरबोर्ड' : 'Leaderboard'}
-              </Link>
-            )}
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -291,7 +271,7 @@ export const Header = () => {
                   {user?.picture ? (
                     <img src={user.picture} alt={user.name} className="w-10 h-10 rounded-full" />
                   ) : (
-                    <div className="w-10 h-10 bg-[#2a5a5a] rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 bg-[#b91c1c] rounded-full flex items-center justify-center text-white font-bold">
                       {user?.name?.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -340,7 +320,7 @@ export const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block"
                 >
-                  <Button variant="outline" className="w-full border-[#2a5a5a] text-[#2a5a5a]">
+                  <Button variant="outline" className="w-full border-[#b91c1c] text-[#b91c1c]">
                     {t('login')}
                   </Button>
                 </Link>
@@ -349,7 +329,7 @@ export const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block"
                 >
-                  <Button className="w-full bg-[#f4c430] text-[#2a5a5a] hover:bg-[#e0b020] font-bold">
+                  <Button className="w-full bg-[#f4c430] text-[#b91c1c] hover:bg-[#e0b020] font-bold">
                     {t('signup')}
                   </Button>
                 </Link>

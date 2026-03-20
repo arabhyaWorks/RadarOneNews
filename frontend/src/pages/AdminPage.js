@@ -271,7 +271,7 @@ export default function AdminPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className={`text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+          <h1 className={`text-3xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
             {t('admin')} {isHindi ? 'डैशबोर्ड' : 'Dashboard'}
           </h1>
           <p className={`text-gray-600 mt-1 ${isHindi ? 'font-hindi' : ''}`}>
@@ -283,7 +283,7 @@ export default function AdminPage() {
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6 md:mb-8">
             {[
-              { label: isHindi ? 'कुल लेख' : 'Total', value: stats.total_articles, color: 'text-[#2a5a5a]', bg: 'bg-[#2a5a5a]/10', Icon: FileText },
+              { label: isHindi ? 'कुल लेख' : 'Total', value: stats.total_articles, color: 'text-[#b91c1c]', bg: 'bg-[#b91c1c]/10', Icon: FileText },
               { label: t('published'), value: stats.published, color: 'text-green-600', bg: 'bg-green-100', Icon: CheckCircle },
               { label: t('drafts'), value: stats.drafts, color: 'text-amber-600', bg: 'bg-amber-100', Icon: BarChart3 },
               { label: isHindi ? 'रद्द' : 'Revoked', value: stats.revoked, color: 'text-red-600', bg: 'bg-red-100', Icon: AlertTriangle },
@@ -311,7 +311,7 @@ export default function AdminPage() {
           {TABS.map(({ id, label, icon: Icon, badge }) => (
             <button key={id} onClick={() => setActiveTab(id)}
               className={`px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                activeTab === id ? 'text-[#2a5a5a] border-b-2 border-[#2a5a5a]' : 'text-gray-500 hover:text-[#2a5a5a]'}`}
+                activeTab === id ? 'text-[#b91c1c] border-b-2 border-[#b91c1c]' : 'text-gray-500 hover:text-[#b91c1c]'}`}
             >
               <Icon className="w-4 h-4" />{label}
               {badge > 0 && <span className="bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{badge}</span>}
@@ -328,22 +328,22 @@ export default function AdminPage() {
                 {['all', 'published', 'draft', 'revoked'].map(f => (
                   <button key={f} onClick={() => setFilter(f)}
                     className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition-colors ${
-                      filter === f ? 'bg-[#2a5a5a] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                      filter === f ? 'bg-[#b91c1c] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                     {f === 'all' ? (isHindi ? 'सभी' : 'All') : f === 'revoked' ? (isHindi ? 'रद्द' : 'Revoked') : t(f === 'published' ? 'published' : 'drafts')}
                   </button>
                 ))}
               </div>
-              <Button variant="outline" size="sm" onClick={handleExport} className="text-xs border-[#2a5a5a] text-[#2a5a5a]">
+              <Button variant="outline" size="sm" onClick={handleExport} className="text-xs border-[#b91c1c] text-[#b91c1c]">
                 <Download className="w-3.5 h-3.5 mr-1" />{isHindi ? 'CSV डाउनलोड' : 'Export CSV'}
               </Button>
             </div>
 
             {/* Bulk actions bar */}
             {selectedIds.length > 0 && (
-              <div className="flex items-center gap-3 mb-3 p-3 bg-[#2a5a5a]/5 border border-[#2a5a5a]/20 rounded">
-                <span className="text-sm font-semibold text-[#2a5a5a]">{selectedIds.length} {isHindi ? 'चुने गए' : 'selected'}</span>
+              <div className="flex items-center gap-3 mb-3 p-3 bg-[#b91c1c]/5 border border-[#b91c1c]/20 rounded">
+                <span className="text-sm font-semibold text-[#b91c1c]">{selectedIds.length} {isHindi ? 'चुने गए' : 'selected'}</span>
                 <select value={bulkAction} onChange={e => setBulkAction(e.target.value)}
-                  className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-[#2a5a5a]">
+                  className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-[#b91c1c]">
                   <option value="">{isHindi ? 'कार्रवाई चुनें' : 'Choose action'}</option>
                   <option value="revoke">{isHindi ? 'रद्द करें' : 'Revoke'}</option>
                   <option value="republish">{isHindi ? 'पुनः प्रकाशित' : 'Republish'}</option>
@@ -352,7 +352,7 @@ export default function AdminPage() {
                   <option value="delete">{isHindi ? 'हटाएं' : 'Delete'}</option>
                 </select>
                 <Button size="sm" disabled={!bulkAction} onClick={handleBulkAction}
-                  className="bg-[#2a5a5a] hover:bg-[#1f4444] text-white text-xs">
+                  className="bg-[#b91c1c] hover:bg-[#991b1b] text-white text-xs">
                   {isHindi ? 'लागू करें' : 'Apply'}
                 </Button>
                 <button className="text-xs text-gray-500 hover:text-gray-700" onClick={() => setSelectedIds([])}>
@@ -385,7 +385,7 @@ export default function AdminPage() {
                       <tbody>
                         {articles.map(article => (
                           <tr key={article.article_id} data-testid={`admin-article-row-${article.article_id}`}
-                            className={selectedIds.includes(article.article_id) ? 'bg-[#2a5a5a]/5' : ''}>
+                            className={selectedIds.includes(article.article_id) ? 'bg-[#b91c1c]/5' : ''}>
                             <td>
                               <input type="checkbox" checked={selectedIds.includes(article.article_id)}
                                 onChange={e => setSelectedIds(e.target.checked ? [...selectedIds, article.article_id] : selectedIds.filter(i => i !== article.article_id))}
@@ -393,9 +393,9 @@ export default function AdminPage() {
                             </td>
                             <td>
                               <div className="max-w-xs flex items-center gap-1.5">
-                                {article.pinned && <Pin className="w-3 h-3 text-[#2a5a5a] shrink-0" title="Pinned" />}
+                                {article.pinned && <Pin className="w-3 h-3 text-[#b91c1c] shrink-0" title="Pinned" />}
                                 {article.is_featured && <Star className="w-3 h-3 text-[#f4c430] shrink-0" title="Featured" />}
-                                <Link to={`/article/${article.article_id}`} className={`font-semibold text-gray-900 line-clamp-1 hover:text-[#2a5a5a] ${isHindi ? 'font-hindi' : ''}`}>
+                                <Link to={`/article/${article.article_id}`} className={`font-semibold text-gray-900 line-clamp-1 hover:text-[#b91c1c] ${isHindi ? 'font-hindi' : ''}`}>
                                   {isHindi && article.title_hi ? article.title_hi : article.title}
                                 </Link>
                               </div>
@@ -408,7 +408,7 @@ export default function AdminPage() {
                             <td>
                               <div className="flex items-center gap-1">
                                 <Link to={`/article/${article.article_id}`}>
-                                  <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a] p-1.5" title="View"><Eye className="w-3.5 h-3.5" /></Button>
+                                  <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#b91c1c] p-1.5" title="View"><Eye className="w-3.5 h-3.5" /></Button>
                                 </Link>
                                 <Button variant="ghost" size="sm"
                                   className={`p-1.5 ${article.is_featured ? 'text-[#f4c430]' : 'text-gray-400 hover:text-[#f4c430]'}`}
@@ -417,7 +417,7 @@ export default function AdminPage() {
                                   <Star className="w-3.5 h-3.5" />
                                 </Button>
                                 <Button variant="ghost" size="sm"
-                                  className={`p-1.5 ${article.pinned ? 'text-[#2a5a5a]' : 'text-gray-400 hover:text-[#2a5a5a]'}`}
+                                  className={`p-1.5 ${article.pinned ? 'text-[#b91c1c]' : 'text-gray-400 hover:text-[#b91c1c]'}`}
                                   title={article.pinned ? 'Unpin' : 'Pin to top'}
                                   onClick={() => setActionDialog({ open: true, type: 'pin', articleId: article.article_id, label: article.title })}>
                                   <Pin className="w-3.5 h-3.5" />
@@ -455,14 +455,14 @@ export default function AdminPage() {
                       </label>
                     </div>
                     {articles.map(article => (
-                      <div key={article.article_id} className={`p-4 flex flex-col gap-3 ${selectedIds.includes(article.article_id) ? 'bg-[#2a5a5a]/5' : 'bg-white'}`}>
+                      <div key={article.article_id} className={`p-4 flex flex-col gap-3 ${selectedIds.includes(article.article_id) ? 'bg-[#b91c1c]/5' : 'bg-white'}`}>
                         <div className="flex gap-3 items-start relative">
                           <input type="checkbox" checked={selectedIds.includes(article.article_id)}
                                  onChange={e => setSelectedIds(e.target.checked ? [...selectedIds, article.article_id] : selectedIds.filter(i => i !== article.article_id))}
                                  className="rounded mt-1 shrink-0 cursor-pointer" />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5 mb-1.5">
-                              {article.pinned && <Pin className="w-3 h-3 text-[#2a5a5a] shrink-0" />}
+                              {article.pinned && <Pin className="w-3 h-3 text-[#b91c1c] shrink-0" />}
                               {article.is_featured && <Star className="w-3 h-3 text-[#f4c430] shrink-0" />}
                               <span className={`category-pill text-[10px] py-0.5 px-2 bg-gray-100 ${isHindi ? 'font-hindi' : ''}`}>{t(article.category.toLowerCase())}</span>
                             </div>
@@ -481,7 +481,7 @@ export default function AdminPage() {
 
                         <div className="flex items-center gap-1 mt-2 pt-3 border-t border-gray-100 pl-7 overflow-x-auto pb-1">
                           <Link to={`/article/${article.article_id}`} className="shrink-0">
-                            <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#2a5a5a] h-8 px-2 bg-gray-50"><Eye className="w-4 h-4" /></Button>
+                            <Button variant="ghost" size="sm" className="text-gray-500 hover:text-[#b91c1c] h-8 px-2 bg-gray-50"><Eye className="w-4 h-4" /></Button>
                           </Link>
                           <Button variant="ghost" size="sm"
                             className={`h-8 px-2 shrink-0 bg-gray-50 ${article.is_featured ? 'text-[#f4c430]' : 'text-gray-400 hover:text-[#f4c430]'}`}
@@ -489,7 +489,7 @@ export default function AdminPage() {
                             <Star className="w-4 h-4" />
                           </Button>
                           <Button variant="ghost" size="sm"
-                            className={`h-8 px-2 shrink-0 bg-gray-50 ${article.pinned ? 'text-[#2a5a5a]' : 'text-gray-400 hover:text-[#2a5a5a]'}`}
+                            className={`h-8 px-2 shrink-0 bg-gray-50 ${article.pinned ? 'text-[#b91c1c]' : 'text-gray-400 hover:text-[#b91c1c]'}`}
                             onClick={() => setActionDialog({ open: true, type: 'pin', articleId: article.article_id, label: article.title })}>
                             <Pin className="w-4 h-4" />
                           </Button>
@@ -526,7 +526,7 @@ export default function AdminPage() {
               {['all', 'pending', 'approved', 'rejected'].map(f => (
                 <button key={f} onClick={() => setReporterFilter(f)}
                   className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition-colors ${
-                    reporterFilter === f ? 'bg-[#2a5a5a] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                    reporterFilter === f ? 'bg-[#b91c1c] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                   {f === 'all' ? (isHindi ? 'सभी' : 'All') : f === 'pending' ? (isHindi ? 'लंबित' : 'Pending') : f === 'approved' ? (isHindi ? 'स्वीकृत' : 'Approved') : (isHindi ? 'अस्वीकृत' : 'Rejected')}
                 </button>
               ))}
@@ -626,7 +626,7 @@ export default function AdminPage() {
               {['all', 'admin', 'reporter'].map(f => (
                 <button key={f} onClick={() => setUserRoleFilter(f)}
                   className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition-colors ${
-                    userRoleFilter === f ? 'bg-[#2a5a5a] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                    userRoleFilter === f ? 'bg-[#b91c1c] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                   {f === 'all' ? (isHindi ? 'सभी' : 'All') : f === 'admin' ? 'Admin' : (isHindi ? 'रिपोर्टर' : 'Reporter')}
                 </button>
               ))}
@@ -748,7 +748,7 @@ export default function AdminPage() {
         {activeTab === 'categories' && (
           <div className="space-y-6">
             <div className="bg-white border border-gray-200 p-6">
-              <h2 className={`text-lg font-bold text-[#2a5a5a] mb-4 flex items-center gap-2 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+              <h2 className={`text-lg font-bold text-[#b91c1c] mb-4 flex items-center gap-2 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                 <Tag className="w-5 h-5" />
                 {editingCategory ? (isHindi ? 'श्रेणी संपादित करें' : 'Edit Category') : (isHindi ? 'नई श्रेणी जोड़ें' : 'Add New Category')}
               </h2>
@@ -758,23 +758,23 @@ export default function AdminPage() {
                     <label className="block text-sm font-semibold text-gray-700 mb-1">ID <span className="text-red-500">*</span> <span className="text-xs font-normal text-gray-400">(e.g. sports)</span></label>
                     <input type="text" value={categoryForm.id}
                       onChange={e => setCategoryForm(p => ({ ...p, id: e.target.value.toLowerCase().replace(/\s+/g, '_') }))}
-                      placeholder="category_id" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#2a5a5a]" />
+                      placeholder="category_id" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#b91c1c]" />
                   </div>
                 )}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">{isHindi ? 'नाम (अंग्रेजी)' : 'Name (English)'} <span className="text-red-500">*</span></label>
                   <input type="text" value={categoryForm.name} onChange={e => setCategoryForm(p => ({ ...p, name: e.target.value }))}
-                    placeholder="Sports" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#2a5a5a]" />
+                    placeholder="Sports" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#b91c1c]" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1 font-hindi">{isHindi ? 'नाम (हिंदी)' : 'Name (Hindi)'} <span className="text-red-500">*</span></label>
                   <input type="text" value={categoryForm.name_hi} onChange={e => setCategoryForm(p => ({ ...p, name_hi: e.target.value }))}
-                    placeholder="खेल" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm font-hindi focus:outline-none focus:border-[#2a5a5a]" />
+                    placeholder="खेल" className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm font-hindi focus:outline-none focus:border-[#b91c1c]" />
                 </div>
               </div>
               <div className="flex gap-3 mt-4">
                 <Button onClick={handleSaveCategory} disabled={!categoryForm.name || !categoryForm.name_hi || (!editingCategory && !categoryForm.id)}
-                  className="bg-[#2a5a5a] hover:bg-[#1f4444] text-white">
+                  className="bg-[#b91c1c] hover:bg-[#991b1b] text-white">
                   <Plus className="w-4 h-4 mr-2" />{editingCategory ? (isHindi ? 'अपडेट करें' : 'Update') : (isHindi ? 'जोड़ें' : 'Add')}
                 </Button>
                 {editingCategory && (
@@ -833,7 +833,7 @@ export default function AdminPage() {
               </div>
             )}
             <div className="bg-white border border-gray-200 p-6">
-              <h2 className={`text-lg font-bold text-[#2a5a5a] mb-4 flex items-center gap-2 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+              <h2 className={`text-lg font-bold text-[#b91c1c] mb-4 flex items-center gap-2 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                 <Radio className="w-5 h-5" />{isHindi ? 'ब्रेकिंग न्यूज़ सेट करें' : 'Set Breaking News Ticker'}
               </h2>
               <p className={`text-sm text-gray-500 mb-4 ${isHindi ? 'font-hindi' : ''}`}>
@@ -841,7 +841,7 @@ export default function AdminPage() {
               </p>
               <textarea value={breakingText} onChange={e => setBreakingText(e.target.value)} rows={3}
                 placeholder={isHindi ? 'ब्रेकिंग न्यूज़ टेक्स्ट यहाँ लिखें...' : 'Enter breaking news text here...'}
-                className={`w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#2a5a5a] mb-4 ${isHindi ? 'font-hindi' : ''}`} />
+                className={`w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-[#b91c1c] mb-4 ${isHindi ? 'font-hindi' : ''}`} />
               <Button onClick={handleSetBreaking} disabled={!breakingText.trim()} className="bg-red-600 hover:bg-red-700 text-white">
                 <Radio className="w-4 h-4 mr-2" />{isHindi ? 'प्रकाशित करें' : 'Publish Ticker'}
               </Button>
@@ -858,13 +858,13 @@ export default function AdminPage() {
               <>
                 <div className="bg-white border border-gray-200 p-4">
                   <p className="text-sm text-gray-500">{isHindi ? 'कुल दृश्य (प्रकाशित लेख)' : 'Total Views (Published Articles)'}</p>
-                  <p className="text-4xl font-bold text-[#2a5a5a]">{analytics.total_views?.toLocaleString()}</p>
+                  <p className="text-4xl font-bold text-[#b91c1c]">{analytics.total_views?.toLocaleString()}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Top Articles */}
                   <div className="bg-white border border-gray-200 p-4">
-                    <h3 className={`font-bold text-[#2a5a5a] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                    <h3 className={`font-bold text-[#b91c1c] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                       {isHindi ? 'शीर्ष लेख' : 'Top Articles'}
                     </h3>
                     <div className="space-y-2">
@@ -872,10 +872,10 @@ export default function AdminPage() {
                         <div key={a.article_id} className="flex items-center gap-3">
                           <span className="text-xs font-bold text-gray-400 w-4">{i + 1}</span>
                           <div className="flex-1 min-w-0">
-                            <Link to={`/article/${a.article_id}`} className="text-sm font-semibold text-gray-900 hover:text-[#2a5a5a] line-clamp-1">{a.title}</Link>
+                            <Link to={`/article/${a.article_id}`} className="text-sm font-semibold text-gray-900 hover:text-[#b91c1c] line-clamp-1">{a.title}</Link>
                             <p className="text-xs text-gray-500">{a.author_name} · <span className="category-pill text-xs py-0">{a.category}</span></p>
                           </div>
-                          <span className="text-sm font-bold text-[#2a5a5a] shrink-0">{a.views?.toLocaleString()}</span>
+                          <span className="text-sm font-bold text-[#b91c1c] shrink-0">{a.views?.toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
@@ -883,7 +883,7 @@ export default function AdminPage() {
 
                   {/* Views by Category */}
                   <div className="bg-white border border-gray-200 p-4">
-                    <h3 className={`font-bold text-[#2a5a5a] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                    <h3 className={`font-bold text-[#b91c1c] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                       {isHindi ? 'श्रेणी अनुसार दृश्य' : 'Views by Category'}
                     </h3>
                     <div className="space-y-2">
@@ -896,7 +896,7 @@ export default function AdminPage() {
                               <span className="text-gray-500">{c.total_views?.toLocaleString()} ({pct}%)</span>
                             </div>
                             <div className="w-full bg-gray-100 rounded-full h-1.5">
-                              <div className="bg-[#2a5a5a] h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+                              <div className="bg-[#b91c1c] h-1.5 rounded-full" style={{ width: `${pct}%` }} />
                             </div>
                           </div>
                         );
@@ -906,16 +906,16 @@ export default function AdminPage() {
 
                   {/* Reporter Leaderboard */}
                   <div className="bg-white border border-gray-200 p-4">
-                    <h3 className={`font-bold text-[#2a5a5a] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                    <h3 className={`font-bold text-[#b91c1c] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                       {isHindi ? 'रिपोर्टर लीडरबोर्ड' : 'Reporter Leaderboard'}
                     </h3>
                     <div className="space-y-2">
                       {analytics.reporterLeaderboard?.map((r, i) => (
                         <div key={r.author_id} className="flex items-center gap-3">
-                          <span className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center ${i === 0 ? 'bg-[#f4c430] text-[#2a5a5a]' : i === 1 ? 'bg-gray-300 text-gray-700' : i === 2 ? 'bg-orange-300 text-orange-800' : 'bg-gray-100 text-gray-500'}`}>{i + 1}</span>
+                          <span className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center ${i === 0 ? 'bg-[#f4c430] text-[#b91c1c]' : i === 1 ? 'bg-gray-300 text-gray-700' : i === 2 ? 'bg-orange-300 text-orange-800' : 'bg-gray-100 text-gray-500'}`}>{i + 1}</span>
                           <span className="flex-1 text-sm font-semibold text-gray-900">{r.author_name}</span>
                           <span className="text-xs text-gray-500">{r.article_count} {isHindi ? 'लेख' : 'articles'}</span>
-                          <span className="text-sm font-bold text-[#2a5a5a]">{r.total_views?.toLocaleString()}</span>
+                          <span className="text-sm font-bold text-[#b91c1c]">{r.total_views?.toLocaleString()}</span>
                         </div>
                       ))}
                     </div>
@@ -923,7 +923,7 @@ export default function AdminPage() {
 
                   {/* Articles over time */}
                   <div className="bg-white border border-gray-200 p-4">
-                    <h3 className={`font-bold text-[#2a5a5a] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                    <h3 className={`font-bold text-[#b91c1c] mb-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                       {isHindi ? 'पिछले 30 दिन (लेख)' : 'Last 30 Days (Articles Published)'}
                     </h3>
                     {analytics.articlesOverTime?.length === 0
@@ -935,7 +935,7 @@ export default function AdminPage() {
                             const h = max > 0 ? Math.max(4, Math.round((d.count / max) * 96)) : 4;
                             return (
                               <div key={d.date} className="flex-1 flex flex-col items-center gap-1" title={`${d.date}: ${d.count}`}>
-                                <div className="w-full bg-[#2a5a5a] rounded-t" style={{ height: h }} />
+                                <div className="w-full bg-[#b91c1c] rounded-t" style={{ height: h }} />
                               </div>
                             );
                           })}
@@ -1008,7 +1008,7 @@ export default function AdminPage() {
             <AlertDialogCancel>{isHindi ? 'रद्द करें' : 'Cancel'}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => articleAction(actionDialog.type, actionDialog.articleId, actionDialog.label)}
-              className={actionDialog.type === 'delete' ? 'bg-red-600 hover:bg-red-700' : actionDialog.type === 'revoke' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-[#2a5a5a] hover:bg-[#1f4444]'}>
+              className={actionDialog.type === 'delete' ? 'bg-red-600 hover:bg-red-700' : actionDialog.type === 'revoke' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-[#b91c1c] hover:bg-[#991b1b]'}>
               {actionDialog.type === 'delete'    && (isHindi ? 'हटाएं' : 'Delete')}
               {actionDialog.type === 'revoke'    && (isHindi ? 'रद्द करें' : 'Revoke')}
               {actionDialog.type === 'republish' && (isHindi ? 'प्रकाशित करें' : 'Republish')}
@@ -1086,7 +1086,7 @@ export default function AdminPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{isHindi ? 'रद्द करें' : 'Cancel'}</AlertDialogCancel>
             <AlertDialogAction onClick={handleUserAction}
-              className={userDialog.type === 'deactivate' ? 'bg-red-600 hover:bg-red-700' : 'bg-[#2a5a5a] hover:bg-[#1f4444]'}>
+              className={userDialog.type === 'deactivate' ? 'bg-red-600 hover:bg-red-700' : 'bg-[#b91c1c] hover:bg-[#991b1b]'}>
               {userDialog.type === 'role'       && (isHindi ? 'अपडेट करें' : 'Update')}
               {userDialog.type === 'activate'   && (isHindi ? 'सक्रिय करें' : 'Activate')}
               {userDialog.type === 'deactivate' && (isHindi ? 'निष्क्रिय करें' : 'Deactivate')}

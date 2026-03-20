@@ -88,7 +88,7 @@ export default function HomePage() {
       {/* Featured Section - Bento Grid */}
       <section className="max-w-7xl mx-auto px-4 py-8">
         <div className="section-divider mb-8">
-          <h2 className={`text-3xl md:text-4xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+          <h2 className={`text-3xl md:text-4xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
             {t('featured')}
           </h2>
         </div>
@@ -120,7 +120,7 @@ export default function HomePage() {
       {/* Latest News Section */}
       <section className="max-w-7xl mx-auto px-4 py-8">
         <div className="section-divider mb-8">
-          <h2 className={`text-3xl md:text-4xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+          <h2 className={`text-3xl md:text-4xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
             {t('latest')}
           </h2>
         </div>
@@ -151,7 +151,7 @@ export default function HomePage() {
         <section className="max-w-7xl mx-auto px-4 py-8">
           <div className="section-divider mb-8 flex items-center gap-3">
             {/* <Flame className="w-7 h-7 text-orange-500" /> */}
-            <h2 className={`text-3xl md:text-4xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h2 className={`text-3xl md:text-4xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {t('popular')}
             </h2>
           </div>
@@ -191,7 +191,7 @@ export default function HomePage() {
                       <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white text-sm font-bold shrink-0">#1</span>
                       <span className={`category-pill ${isHindi ? 'font-hindi' : ''}`}>{t(popularArticles[0].category.toLowerCase())}</span>
                     </div>
-                    <h3 className={`text-xl font-bold text-gray-900 leading-tight line-clamp-3 mb-3 group-hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                    <h3 className={`text-xl font-bold text-gray-900 leading-tight line-clamp-3 mb-3 group-hover:text-[#b91c1c] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                       {isHindi && popularArticles[0].title_hi ? popularArticles[0].title_hi : popularArticles[0].title}
                     </h3>
                     <div className="flex items-center gap-3 text-xs text-gray-500 mt-auto">
@@ -222,7 +222,7 @@ export default function HomePage() {
                           <img src={article.image_url} alt={artTitle} className="w-full h-full object-cover news-card-image" />
                         </div>
                       ) : (
-                        <div className="w-32 h-20 rounded shrink-0 bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]" />
+                        <div className="w-32 h-20 rounded shrink-0 bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d]" />
                       )}
 
                       {/* Content */}
@@ -230,7 +230,7 @@ export default function HomePage() {
                         <span className={`category-pill text-xs mb-1 inline-block ${isHindi ? 'font-hindi' : ''}`}>
                           {t(article.category.toLowerCase())}
                         </span>
-                        <h4 className={`text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                        <h4 className={`text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-[#b91c1c] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                           {artTitle}
                         </h4>
                         <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
@@ -255,12 +255,12 @@ export default function HomePage() {
       {categories.map((category) => (
         <section key={category} className="max-w-7xl mx-auto px-4 py-8">
           <div className="section-divider mb-8 flex items-center justify-between">
-            <h2 className={`text-2xl md:text-3xl font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h2 className={`text-2xl md:text-3xl font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {t(category)}
             </h2>
             <Link 
               to={`/category/${category}`}
-              className="flex items-center gap-1 text-[#2a5a5a] hover:text-[#f4c430] font-semibold text-sm uppercase tracking-wider transition-colors"
+              className="flex items-center gap-1 text-[#b91c1c] hover:text-[#f4c430] font-semibold text-sm uppercase tracking-wider transition-colors"
               data-testid={`view-all-${category}`}
             >
               {isHindi ? 'सभी देखें' : 'View All'}

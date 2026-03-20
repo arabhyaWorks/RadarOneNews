@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
     return (
       <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center">
         <div className="animate-pulse flex flex-col items-center">
-          <div className="w-16 h-16 bg-[#2a5a5a] rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-[#b91c1c] rounded-full flex items-center justify-center mb-4">
             <Trophy className="w-8 h-8 text-[#f4c430]" />
           </div>
           <p className="text-gray-600">{isHindi ? 'लीडरबोर्ड लोड हो रहा है...' : 'Loading Leaderboard...'}</p>
@@ -64,7 +64,7 @@ export default function LeaderboardPage() {
 
       <div className="min-h-screen bg-[#faf9f6] pb-16">
         {/* Header Hero */}
-        <div className="bg-[#2a5a5a] text-white py-12 px-4 relative overflow-hidden shadow-md">
+        <div className="bg-[#b91c1c] text-white py-12 px-4 relative overflow-hidden shadow-md">
           <div className="max-w-[1200px] mx-auto text-center relative z-10">
             <h1 className={`text-4xl md:text-5xl font-bold text-[#f4c430] mb-4 flex items-center justify-center gap-3 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               <Trophy className="w-8 h-8 md:w-10 md:h-10" />
@@ -103,7 +103,7 @@ export default function LeaderboardPage() {
                       {user.picture ? (
                         <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[#2a5a5a] text-white text-3xl font-bold">
+                        <div className="w-full h-full flex items-center justify-center bg-[#b91c1c] text-white text-3xl font-bold">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -156,13 +156,13 @@ export default function LeaderboardPage() {
                               {user.picture ? (
                                 <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-[#2a5a5a] text-white font-bold">
+                                <div className="w-full h-full flex items-center justify-center bg-[#b91c1c] text-white font-bold">
                                   {user.name.charAt(0).toUpperCase()}
                                 </div>
                               )}
                             </div>
                             <div>
-                              <div className="font-semibold text-gray-900 group-hover:text-[#2a5a5a] transition-colors">{user.name}</div>
+                              <div className="font-semibold text-gray-900 group-hover:text-[#b91c1c] transition-colors">{user.name}</div>
                               {user.longest_streak > 0 && (
                                 <div className="text-xs text-gray-400">Personal Best: {user.longest_streak} days</div>
                               )}

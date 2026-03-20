@@ -85,7 +85,7 @@ export default function ArticlePage() {
     return (
       <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center">
         <div className="animate-pulse text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-[#2a5a5a] rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-[#b91c1c] rounded-full flex items-center justify-center">
             <div className="w-8 h-8 bg-[#f4c430] rounded-full" />
           </div>
           <p className="text-gray-600">{isHindi ? 'लोड हो रहा है...' : 'Loading...'}</p>
@@ -103,7 +103,7 @@ export default function ArticlePage() {
             {isHindi ? 'लेख नहीं मिला' : 'Article not found'}
           </h2>
           <Link to="/">
-            <Button className="bg-[#2a5a5a] hover:bg-[#1f4444] text-white">
+            <Button className="bg-[#b91c1c] hover:bg-[#991b1b] text-white">
               {isHindi ? 'होम पर जाएं' : 'Go to Home'}
             </Button>
           </Link>
@@ -146,6 +146,14 @@ export default function ArticlePage() {
               </Button>
             </Link>
           </div>
+          {article.source_name && (
+            <div className="absolute bottom-4 right-4">
+              <span className="bg-black/70 text-white text-xs font-semibold px-3 py-1.5 rounded-sm backdrop-blur-sm flex items-center gap-1.5">
+                <svg className="w-3 h-3 opacity-70" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/></svg>
+                {isHindi ? 'स्रोत: ' : 'Source: '}{article.source_name}
+              </span>
+            </div>
+          )}
         </div>
       )}
 
@@ -160,7 +168,7 @@ export default function ArticlePage() {
             <div className="flex items-center gap-3 mb-4">
               <Link
                 to={`/category/${article.category}`}
-                className={`category-pill hover:bg-[#f4c430] hover:text-[#2a5a5a] ${isHindi ? 'font-hindi' : ''}`}
+                className={`category-pill hover:bg-[#f4c430] hover:text-[#b91c1c] ${isHindi ? 'font-hindi' : ''}`}
               >
                 {categoryName}
               </Link>
@@ -178,7 +186,7 @@ export default function ArticlePage() {
             <div className="flex flex-wrap items-center gap-4 text-gray-600 pb-6 border-b border-gray-200 mb-8">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                <Link to={`/author/${article.author_id}`} className={`hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi' : ''}`}>
+                <Link to={`/author/${article.author_id}`} className={`hover:text-[#b91c1c] transition-colors ${isHindi ? 'font-hindi' : ''}`}>
                   {t('by')} {article.author_name}
                 </Link>
               </div>
@@ -193,7 +201,7 @@ export default function ArticlePage() {
               <Button
                 variant="ghost" size="sm"
                 onClick={handleShare}
-                className="ml-auto text-[#2a5a5a] hover:text-[#f4c430]"
+                className="ml-auto text-[#b91c1c] hover:text-[#f4c430]"
                 data-testid="share-btn"
               >
                 <Share2 className="w-4 h-4 mr-2" />
@@ -213,9 +221,9 @@ export default function ArticlePage() {
             <div className="sticky top-6">
 
               {/* Header */}
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-[#2a5a5a]">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-[#b91c1c]">
                 <Flame className="w-5 h-5 text-orange-500" />
-                <h2 className={`text-lg font-bold text-[#2a5a5a] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                <h2 className={`text-lg font-bold text-[#b91c1c] ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                   {isHindi ? 'लोकप्रिय खबरें' : 'Popular News'}
                 </h2>
               </div>
@@ -231,7 +239,7 @@ export default function ArticlePage() {
                       <Link
                         key={pop.article_id}
                         to={`/article/${pop.article_id}`}
-                        className="group flex gap-3 items-start p-3 bg-white border border-gray-100 hover:border-[#2a5a5a]/30 hover:shadow-sm transition-all rounded-sm"
+                        className="group flex gap-3 items-start p-3 bg-white border border-gray-100 hover:border-[#b91c1c]/30 hover:shadow-sm transition-all rounded-sm"
                       >
                         {/* Thumb */}
                         {pop.image_url ? (
@@ -240,12 +248,12 @@ export default function ArticlePage() {
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                           </div>
                         ) : (
-                          <div className="w-24 h-16 flex-shrink-0 rounded-sm bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]" />
+                          <div className="w-24 h-16 flex-shrink-0 rounded-sm bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d]" />
                         )}
 
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <h4 className={`text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#2a5a5a] transition-colors mb-1 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+                          <h4 className={`text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#b91c1c] transition-colors mb-1 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
                             {popTitle}
                           </h4>
                           <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -258,7 +266,7 @@ export default function ArticlePage() {
                           </div>
                         </div>
 
-                        <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0 group-hover:text-[#2a5a5a] mt-1 transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0 group-hover:text-[#b91c1c] mt-1 transition-colors" />
                       </Link>
                     );
                   })}
@@ -266,7 +274,7 @@ export default function ArticlePage() {
 
               {/* CTA */}
               <Link to="/"
-                className="mt-5 flex items-center justify-center gap-2 w-full py-2.5 border border-[#2a5a5a] text-[#2a5a5a] text-sm font-semibold hover:bg-[#2a5a5a] hover:text-white transition-colors rounded-sm">
+                className="mt-5 flex items-center justify-center gap-2 w-full py-2.5 border border-[#b91c1c] text-[#b91c1c] text-sm font-semibold hover:bg-[#b91c1c] hover:text-white transition-colors rounded-sm">
                 {isHindi ? 'सभी खबरें देखें' : 'View All News'}
                 <ChevronRight className="w-4 h-4" />
               </Link>
@@ -281,7 +289,7 @@ export default function ArticlePage() {
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 py-12 border-t border-gray-200">
-          <h2 className={`text-2xl md:text-3xl font-bold text-[#2a5a5a] mb-8 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+          <h2 className={`text-2xl md:text-3xl font-bold text-[#b91c1c] mb-8 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
             {isHindi ? 'संबंधित समाचार' : 'Related News'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -296,7 +304,7 @@ export default function ArticlePage() {
       {latestArticles.length > 0 && (
         <section className="bg-gray-50 border-t border-gray-200 py-12">
           <div className="max-w-7xl mx-auto px-4">
-            <h2 className={`text-2xl md:text-3xl font-bold text-[#2a5a5a] mb-8 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+            <h2 className={`text-2xl md:text-3xl font-bold text-[#b91c1c] mb-8 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
               {isHindi ? 'ताज़ा खबरें' : 'Latest News'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

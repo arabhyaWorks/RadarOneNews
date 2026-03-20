@@ -1,0 +1,556 @@
+{
+  "feeds": [
+    {
+      "url": "https://www.amarujala.com/rss/breaking-news.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "breaking"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/uttar-pradesh.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "uttar-pradesh"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/gorakhpur.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "gorakhpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/lucknow.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "lucknow"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/amroha.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "amroha"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/amethi.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "amethi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ambedkar-nagar.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ambedkar-nagar"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ayodhya.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ayodhya"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/aligarh.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "aligarh"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/agra.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "agra"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/azamgarh.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "azamgarh"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/etawah.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "etawah"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/unnao.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "unnao"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ghaziabad.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ghaziabad"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/noida.xml?client=android&client_new=au_revamp",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "noida"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/etah.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "etah"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/auraiya.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "auraiya"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/kannauj.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "kannauj"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/kanpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "kanpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/kasganj.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "kasganj"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/kushinagar.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "kushinagar"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/kaushambi.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "kaushambi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ghazipur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ghazipur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/gonda.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "gonda"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ghatampur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ghatampur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/chandauli.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "chandauli"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/chitrakoot.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "chitrakoot"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/jalaun.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "jalaun"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/jaunpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "jaunpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/jhansi.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "jhansi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/deoria.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "deoria"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/pilibhit.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "pilibhit"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/pratapgarh.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "pratapgarh"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/allahabad.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "allahabad"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/fatehpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "fatehpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/farrukhabad.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "farrukhabad"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/firozabad.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "firozabad"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/budaun.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "budaun"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/bareilly.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "bareilly"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/balrampur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "balrampur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/ballia.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "ballia"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/basti.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "basti"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/bahraich.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "bahraich"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/banda.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "banda"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/baghpat.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "baghpat"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/barabanki.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "barabanki"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/bijnor.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "bijnor"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/bulandshahr.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "bulandshahr"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/bhadohi.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "bhadohi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/mau.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "mau"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/mathura.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "mathura"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/maharajganj.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "maharajganj"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/mahoba.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "mahoba"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/mirzapur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "mirzapur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/muzaffarnagar.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "muzaffarnagar"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/moradabad.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "moradabad"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/meerut.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "meerut"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/mainpuri.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "mainpuri"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/rampur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "rampur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/raebareli.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "raebareli"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/lakhimpur-kheri.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "lakhimpur-kheri"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/lalitpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "lalitpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/varanasi.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "varanasi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/shamli.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "shamli"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/shahjahanpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "shahjahanpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/shravasti.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "shravasti"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/sant-kabir-nagar.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "sant-kabir-nagar"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/sambhal.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "sambhal"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/saharanpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "saharanpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/siddharthnagar.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "siddharthnagar"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/sitapur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "sitapur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/sultanpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "sultanpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/sonebhadra.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "sonebhadra"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/hamirpur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "hamirpur"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/hardoi.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "hardoi"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/hathras.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "hathras"
+    },
+    {
+      "url": "https://www.amarujala.com/rss/hapur.xml",
+      "source": "Amar Ujala",
+      "language": "hi",
+      "category": "hapur"
+    },
+    {
+      "url": "https://hindi.news18.com/commonfeeds/v1/hin/rss/uttar-pradesh/uttar-pradesh.xml",
+      "source": "News18 Hindi",
+      "language": "hi",
+      "category": "uttar-pradesh"
+    },
+    {
+      "url": "https://hindi.news18.com/commonfeeds/v1/hin/rss/crime/crime.xml",
+      "source": "News18 Hindi",
+      "language": "hi",
+      "category": "crime"
+    },
+    {
+      "url": "https://www.indiatv.in/rssnews/topstory-uttar-pradesh.xml",
+      "source": "India TV",
+      "language": "hi",
+      "category": "uttar-pradesh"
+    },
+    {
+      "url": "https://www.indiatv.in/rssnews/topstory-crime.xml",
+      "source": "India TV",
+      "language": "hi",
+      "category": "crime"
+    },
+    {
+      "url": "https://www.bhaskar.com/rss-v1--category-2052.xml",
+      "source": "Dainik Bhaskar",
+      "language": "hi",
+      "category": "general"
+    },
+    {
+      "url": "https://www.poojanews.com/uttar-pradesh-news/feed/",
+      "source": "Pooja News",
+      "language": "hi",
+      "category": "uttar-pradesh"
+    },
+    {
+      "url": "https://www.hindustantimes.com/feeds/rss/cities/noida-news/rssfeed.xml",
+      "source": "Hindustan Times",
+      "language": "en",
+      "category": "noida"
+    },
+    {
+      "url": "https://www.hindustantimes.com/feeds/rss/cities/lucknow-news/rssfeed.xml",
+      "source": "Hindustan Times",
+      "language": "en",
+      "category": "lucknow"
+    },
+    {
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/8021716.cms",
+      "source": "Times of India",
+      "language": "en",
+      "category": "uttar-pradesh"
+    },
+    {
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/3947067.cms",
+      "source": "Times of India",
+      "language": "en",
+      "category": "lucknow"
+    },
+    {
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/3947071.cms",
+      "source": "Times of India",
+      "language": "en",
+      "category": "noida"
+    },
+    {
+      "url": "https://www.thehindu.com/news/national/feeder/default.rss",
+      "source": "The Hindu",
+      "language": "en",
+      "category": "national"
+    },
+    {
+      "url": "https://www.thehindu.com/feeder/default.rss",
+      "source": "The Hindu",
+      "language": "en",
+      "category": "general"
+    },
+    {
+      "url": "https://feed.livehindustan.com/rss/3127",
+      "source": "Live Hindustan",
+      "language": "hi",
+      "category": "general"
+    },
+    {
+      "url": "https://www.tv9hindi.com/feed",
+      "source": "TV9 Hindi",
+      "language": "hi",
+      "category": "general"
+    }
+  ]
+}

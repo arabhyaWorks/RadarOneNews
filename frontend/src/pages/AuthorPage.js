@@ -46,7 +46,7 @@ export default function AuthorPage() {
   return (
     <div className="min-h-screen bg-[#faf9f6]" data-testid="author-page">
       {/* Hero Banner */}
-      <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-r from-[#2a5a5a] to-[#1a3a3a]">
+      <div className="relative h-48 md:h-64 overflow-hidden bg-gradient-to-r from-[#b91c1c] to-[#7f1d1d]">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center flex flex-col items-center">
             {author?.picture ? (
@@ -91,7 +91,7 @@ export default function AuthorPage() {
 
       {/* Articles Grid */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h2 className={`text-2xl font-bold text-[#2a5a5a] mb-6 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+        <h2 className={`text-2xl font-bold text-[#b91c1c] mb-6 ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
           {isHindi ? 'इनके द्वारा लिखे गए लेख' : 'Articles by'} {author?.name}
         </h2>
         {loading ? (

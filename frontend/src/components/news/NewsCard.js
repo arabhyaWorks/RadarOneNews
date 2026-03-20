@@ -44,7 +44,7 @@ export const NewsCard = ({ article, variant = 'default' }) => {
               className="w-full h-full object-cover news-card-image"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]" />
+            <div className="w-full h-full bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         </div>
@@ -95,7 +95,7 @@ export const NewsCard = ({ article, variant = 'default' }) => {
               className="w-full h-full object-cover news-card-image"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#2a5a5a] to-[#1a3a3a]" />
+            <div className="w-full h-full bg-gradient-to-br from-[#b91c1c] to-[#7f1d1d]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
         </div>
@@ -142,7 +142,7 @@ export const NewsCard = ({ article, variant = 'default' }) => {
             </span>
           )}
         </div>
-        <h3 className={`text-xl font-bold text-gray-900 leading-tight line-clamp-2 mb-2 group-hover:text-[#2a5a5a] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
+        <h3 className={`text-xl font-bold text-gray-900 leading-tight line-clamp-2 mb-2 group-hover:text-[#b91c1c] transition-colors ${isHindi ? 'font-hindi-heading' : 'font-heading'}`}>
           {title}
         </h3>
         <p className={`text-gray-600 text-sm line-clamp-3 mb-4 ${isHindi ? 'font-hindi' : ''}`}>
