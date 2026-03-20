@@ -52,6 +52,14 @@ function urlToId(url) {
   return 'rss_' + crypto.createHash('md5').update(url).digest('hex').substring(0, 16);
 }
 
+function decodeEntities(str) {
+  return (str || '')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(n))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&nbsp;/g, ' ');
+}
+
 function stripHtml(html) {
   return (html || '').replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -121,7 +129,7 @@ async function main() {
       let feedInserted = 0;
 
       for (const item of rawItems) {
-        const title = extractTag('title', item);
+        const title = decodeEntities(extractTag('title', item));
         if (!title || title.length < 5) { skippedNoTitle++; continue; }
 
         const link = extractTag('link', item);
