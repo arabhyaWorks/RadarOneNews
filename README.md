@@ -1,46 +1,51 @@
-# Samachar Group - News Portal
+# News Portal — Powered by Samachar Engine
 
-A bilingual (English + Hindi) news portal built with **React**, **Node.js/Express**, and **MySQL**.
+A bilingual (English + Hindi) news portal built with **React**, **Node.js/Express**, and **MySQL**. Fully white-label ready — rebrand for any client by setting environment variables.
 
 ---
 
 ## Tech Stack
 
-| Layer    | Technology                          |
-|----------|-------------------------------------|
+| Layer    | Technology |
+|----------|-----------|
 | Frontend | React 19, Tailwind CSS, Radix UI, React Router v7 |
-| Backend  | Node.js, Express.js                 |
-| Database | MySQL 9.x                           |
-| Auth     | JWT (jsonwebtoken) + bcryptjs, Google OAuth (session-based) |
+| Backend  | Node.js, Express.js |
+| Database | MySQL (local or AWS RDS) |
+| Storage  | AWS S3 (image uploads) — falls back to local disk if not configured |
+| Auth     | JWT + bcryptjs, Google OAuth |
 
 ---
 
-## Prerequisites
+## Features
 
-- Node.js v18+ & npm
-- MySQL 9.x (installed via Homebrew)
-- Git
+- **Bilingual** — English + Hindi toggle throughout
+- **Role-based access** — Admin, Reporter, Reader
+- **Reporter approval workflow** — New reporters start as `pending`; admin must approve before they can publish
+- **Admin panel** with 7 tabs:
+  - Articles (bulk actions, feature/pin/revoke/republish, CSV export)
+  - Reporters (approve / reject pending accounts)
+  - Users (role change, activate / deactivate)
+  - Categories (add / edit / delete — DB-driven, no hardcoding)
+  - Breaking News ticker (set / clear)
+  - Analytics (views, top articles, reporter leaderboard, charts)
+  - Audit Log
+- **Gamification** — reporters earn points and streaks on publish; leaderboard visible to reporters & admins only
+- **Dynamic branding** — name, tagline, contact details all set via `.env` (no code changes needed per client)
+- **S3 image upload** with local-disk fallback
+- **API response caching** for performance
 
 ---
 
-## Local Setup
+## Quick Start
 
-### 1. Clone the repo
-
-```bash
-git clone <your-repo-url>
-cd Samachar
-```
-
-### 2. Start MySQL
+### 1. Clone
 
 ```bash
-brew services start mysql
-# OR run manually:
-/opt/homebrew/opt/mysql/bin/mysqld_safe --datadir=/opt/homebrew/var/mysql &
+git clone <repo-url>
+cd <project>
 ```
 
-### 3. Backend Setup
+### 2. Backend
 
 ```bash
 cd backend
@@ -48,35 +53,42 @@ npm install
 ```
 
 Create `backend/.env`:
-```
+
+```env
+# Database (local or RDS)
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
-DB_NAME=samachar
-JWT_SECRET=samachar-secret-key-2024
+DB_NAME=samachar_group
+JWT_SECRET=your-secret-key
 CORS_ORIGINS=http://localhost:3000
 PORT=8001
+
+# AWS S3 (optional — omit to use local disk storage)
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=ap-south-1
+S3_BUCKET_NAME=
 ```
 
-Create the database schema:
+Run the schema:
+
 ```bash
 mysql -u root < setup.sql
 ```
 
-Seed users and sample articles:
-```bash
-node seed.js
-```
+Start:
 
-Start the server:
 ```bash
 node server.js
 ```
 
 Backend runs at **http://localhost:8001**
 
-### 4. Frontend Setup
+---
+
+### 3. Frontend
 
 ```bash
 cd frontend
@@ -84,11 +96,25 @@ npm install --legacy-peer-deps
 ```
 
 Create `frontend/.env`:
-```
+
+```env
 REACT_APP_BACKEND_URL=http://localhost:8001
+
+# Branding — change these per client deployment
+REACT_APP_BRAND_NAME=Samachar Group
+REACT_APP_BRAND_NAME_HI=समाचार ग्रुप
+REACT_APP_BRAND_TAGLINE=India's Trusted News Platform
+REACT_APP_BRAND_TAGLINE_HI=भारत का विश्वसनीय न्यूज़ प्लेटफ़ॉर्म
+REACT_APP_BRAND_DESCRIPTION=Breaking news, politics, sports, business, and entertainment.
+REACT_APP_BRAND_DESCRIPTION_HI=ताज़ा खबरें, राजनीति, खेल, व्यापार और मनोरंजन।
+REACT_APP_BRAND_EMAIL=news@example.in
+REACT_APP_BRAND_PHONE=+91 98765 43210
+REACT_APP_BRAND_ADDRESS=Lucknow, Uttar Pradesh, India
+REACT_APP_BRAND_ADDRESS_HI=लखनऊ, उत्तर प्रदेश, भारत
 ```
 
-Start the app:
+Start:
+
 ```bash
 npm start
 ```
@@ -99,184 +125,143 @@ Frontend runs at **http://localhost:3000**
 
 ## Default Login Credentials
 
-| Role     | Email                    | Password      |
-|----------|--------------------------|---------------|
-| Admin    | admin@samachar.com       | admin123      |
-| Reporter | reporter@samachar.com    | reporter123   |
+| Role     | Email                 | Password    |
+|----------|-----------------------|-------------|
+| Admin    | admin@samachar.com    | admin123    |
+| Reporter | reporter@samachar.com | reporter123 |
+
+> Admin login automatically redirects to `/admin`.
+
+---
+
+## White-Label / Client Deployment
+
+To deploy for a new client, only change the `frontend/.env` branding variables and `backend/.env` database/S3 credentials — **no code changes required**.
+
+```env
+REACT_APP_BRAND_NAME=AmitNews
+REACT_APP_BRAND_NAME_HI=अमित न्यूज़
+REACT_APP_BRAND_TAGLINE=UP ki Buland Awaaz
+REACT_APP_BRAND_TAGLINE_HI=यूपी की बुलंद आवाज़
+REACT_APP_BRAND_EMAIL=hello@amitnews.in
+...
+```
 
 ---
 
 ## Project Structure
 
 ```
-Samachar/
+project/
 ├── backend/
-│   ├── server.js        # Express app — all API routes
-│   ├── db.js            # MySQL connection pool + table creation
-│   ├── seed.js          # Seeds users and sample articles
-│   ├── setup.sql        # DDL — creates samachar DB and all tables
-│   ├── package.json
-│   └── .env             # DB credentials, JWT secret, CORS origins
+│   ├── server.js               # All API routes, auth, gamification, admin
+│   ├── db.js                   # MySQL connection pool
+│   ├── cache.js                # In-memory API cache
+│   ├── setup.sql               # Full DB schema
+│   ├── migrate_gamification.js # Adds score/streak columns to existing DB
+│   ├── seed_scores.js          # Seeds gamification scores for existing users
+│   └── .env                    # DB, JWT, AWS credentials
 │
 └── frontend/
-    ├── src/
-    │   ├── pages/       # HomePage, ArticlePage, CategoryPage, DashboardPage, AdminPage, EditorPage
-    │   ├── components/  # Shared UI components (QuillEditor, etc.)
-    │   └── ...
-    ├── package.json
-    └── .env             # REACT_APP_BACKEND_URL
+    └── src/
+        ├── config/
+        │   └── branding.js     # All brand text — reads from REACT_APP_* env vars
+        ├── pages/
+        │   ├── HomePage.js
+        │   ├── ArticlePage.js
+        │   ├── CategoryPage.js
+        │   ├── AdminPage.js    # Full admin panel (7 tabs)
+        │   ├── DashboardPage.js
+        │   ├── EditorPage.js   # Rich text editor + S3 image upload
+        │   ├── LeaderboardPage.js
+        │   └── AuthPage.js
+        ├── components/
+        │   └── layout/
+        │       ├── Header.js   # Breaking news ticker, category nav
+        │       └── Footer.js
+        └── .env                # Backend URL + branding vars
 ```
 
 ---
 
-## Database Schema
+## Database Schema (key tables)
 
-Database name: **`samachar`**
-Charset: `utf8mb4` / `utf8mb4_unicode_ci`
+### `users`
+| Column            | Type        | Description |
+|-------------------|-------------|-------------|
+| user_id           | VARCHAR(50) | Primary key |
+| email             | VARCHAR(255)| Unique login email |
+| name              | VARCHAR(255)| Display name |
+| password          | VARCHAR(255)| bcrypt hash (NULL for OAuth) |
+| role              | VARCHAR(50) | `admin` / `reporter` / `reader` |
+| reporter_status   | VARCHAR(50) | `pending` / `approved` / `rejected` |
+| is_active         | TINYINT(1)  | 1 = active, 0 = deactivated |
+| score             | INT         | Gamification score |
+| current_streak    | INT         | Consecutive publish days |
+| longest_streak    | INT         | All-time best streak |
+| last_publish_date | DATE        | Used to compute streaks |
 
-### Table: `users`
+### `articles`
+| Column      | Type         | Description |
+|-------------|--------------|-------------|
+| article_id  | VARCHAR(50)  | Primary key |
+| title       | TEXT         | English title |
+| content     | LONGTEXT     | HTML from rich editor |
+| category    | VARCHAR(100) | DB-driven category |
+| image_url   | TEXT         | S3 or external URL |
+| is_featured | TINYINT(1)   | Featured on homepage |
+| pinned      | TINYINT(1)   | Pinned to top |
+| status      | VARCHAR(50)  | `draft` / `published` / `revoked` |
+| views       | INT          | View counter |
 
-| Column     | Type         | Constraints                  | Description                   |
-|------------|--------------|------------------------------|-------------------------------|
-| user_id    | VARCHAR(50)  | PRIMARY KEY                  | e.g. `user_a1b2c3d4e5f6`      |
-| email      | VARCHAR(255) | UNIQUE, NOT NULL             | Login email                   |
-| name       | VARCHAR(255) | NOT NULL                     | Display name                  |
-| password   | VARCHAR(255) | NULL                         | bcrypt hash (NULL for OAuth)  |
-| role       | VARCHAR(50)  | NOT NULL, DEFAULT 'reporter' | `admin` or `reporter`         |
-| picture    | TEXT         | NULL                         | Profile photo URL             |
-| created_at | DATETIME     | NOT NULL                     | UTC timestamp                 |
-
-Indexes: `uq_email` (unique), `idx_role`
-
----
-
-### Table: `user_sessions`
-
-Stores Google OAuth sessions (not used for JWT logins).
-
-| Column        | Type         | Constraints    | Description              |
-|---------------|--------------|----------------|--------------------------|
-| id            | INT          | PK, AUTO_INC   | Internal row ID          |
-| user_id       | VARCHAR(50)  | NOT NULL       | References users.user_id |
-| session_token | VARCHAR(500) | NOT NULL       | Token from Google OAuth  |
-| expires_at    | DATETIME     | NOT NULL       | 7-day expiry             |
-| created_at    | DATETIME     | NOT NULL       | UTC timestamp            |
-
-Indexes: `idx_session_token`, `idx_user_id`
-
----
-
-### Table: `articles`
-
-| Column      | Type         | Constraints                 | Description                                |
-|-------------|--------------|-----------------------------|--------------------------------------------|
-| article_id  | VARCHAR(50)  | PRIMARY KEY                 | e.g. `article_a1b2c3d4e5f6`               |
-| title       | TEXT         | NOT NULL                    | English title                              |
-| title_hi    | TEXT         | NULL                        | Hindi title                                |
-| content     | LONGTEXT     | NOT NULL                    | English content (HTML from rich editor)    |
-| content_hi  | LONGTEXT     | NULL                        | Hindi content                              |
-| category    | VARCHAR(100) | NOT NULL                    | sports / crime / politics / entertainment / business / technology |
-| image_url   | TEXT         | NULL                        | Cover image URL                            |
-| is_featured | TINYINT(1)   | NOT NULL, DEFAULT 0         | 1 = featured on homepage                  |
-| status      | VARCHAR(50)  | NOT NULL, DEFAULT 'draft'   | `draft` / `published` / `revoked`         |
-| author_id   | VARCHAR(50)  | NOT NULL                    | References users.user_id                   |
-| author_name | VARCHAR(255) | NOT NULL                    | Denormalised author name                   |
-| created_at  | DATETIME     | NOT NULL                    | UTC timestamp                              |
-| updated_at  | DATETIME     | NOT NULL, ON UPDATE         | Auto-updated on change                     |
-| views       | INT          | NOT NULL, DEFAULT 0         | View count                                 |
-
-Indexes: `idx_status`, `idx_category`, `idx_author_id`, `idx_is_featured`, `idx_created_at`
-
----
-
-## API Reference
-
-Base URL: `http://localhost:8001/api`
-
-All protected routes accept auth via:
-- Cookie: `session_token`
-- Header: `Authorization: Bearer <token>`
-
-### Auth
-
-| Method | Path                   | Auth     | Description                        |
-|--------|------------------------|----------|------------------------------------|
-| POST   | /auth/register         | Public   | Register new reporter account      |
-| POST   | /auth/login            | Public   | Login, returns JWT + sets cookie   |
-| POST   | /auth/google-session   | Public   | Google OAuth via session ID        |
-| GET    | /auth/me               | Required | Get current user info              |
-| POST   | /auth/logout           | Public   | Clear cookie + delete session      |
-
-### Articles
-
-| Method | Path                              | Auth          | Description                          |
-|--------|-----------------------------------|---------------|--------------------------------------|
-| POST   | /articles                         | Required      | Create article (reporter or admin)   |
-| GET    | /articles                         | Public        | List articles (filterable)           |
-| GET    | /articles/:article_id             | Public        | Get single article (increments views)|
-| PUT    | /articles/:article_id             | Required      | Update (author or admin only)        |
-| DELETE | /articles/:article_id             | Required      | Delete (author or admin only)        |
-
-Query params for GET /articles: `category`, `status`, `search`, `featured`, `author_id`, `limit` (default 50), `skip` (default 0)
-
-### Admin (admin role required)
-
-| Method | Path                                    | Description              |
-|--------|-----------------------------------------|--------------------------|
-| GET    | /admin/articles                         | All articles (any status)|
-| PUT    | /admin/articles/:article_id/revoke      | Set status to revoked    |
-| GET    | /admin/stats                            | Counts: articles, users  |
-
-### Public
-
-| Method | Path                  | Description                              |
-|--------|-----------------------|------------------------------------------|
-| GET    | /public/articles      | Published articles only (filterable)     |
-| GET    | /public/categories    | Hardcoded list of 6 categories           |
+### Other tables
+- `categories` — admin-managed category list
+- `settings` — key-value store (breaking news ticker etc.)
+- `audit_logs` — admin action history
 
 ---
 
 ## Article Status Flow
 
 ```
-draft → published → revoked
+draft → published → revoked → published (republish)
 ```
-
-- Reporters create articles as `draft` or `published`
-- Admins can `revoke` any published article
-- Only `published` articles appear in `/public/articles`
 
 ---
 
-## Categories
+## Gamification
 
-| ID            | English       | Hindi         |
-|---------------|---------------|---------------|
-| sports        | Sports        | खेल           |
-| crime         | Crime         | अपराध         |
-| politics      | Politics      | राजनीति       |
-| entertainment | Entertainment | मनोरंजन       |
-| business      | Business      | व्यापार       |
-| technology    | Technology    | प्रौद्योगिकी  |
+- +50 points per published article
+- +10 bonus points for publishing on consecutive days (streak)
+- Leaderboard visible to reporters and admins only
+
+---
+
+## API Overview
+
+Base URL: `http://localhost:8001/api`
+
+Auth via cookie `session_token` or header `Authorization: Bearer <token>`.
+
+| Group      | Examples |
+|------------|---------|
+| Auth       | `POST /auth/login`, `POST /auth/register`, `GET /auth/me` |
+| Public     | `GET /public/articles`, `GET /public/breaking-news`, `GET /public/leaderboard` |
+| Articles   | `POST /articles`, `GET /articles/:id`, `PUT /articles/:id` |
+| Admin      | `GET /admin/articles`, `PUT /admin/articles/:id/revoke`, `PUT /admin/articles/:id/feature`, `PUT /admin/articles/:id/pin`, `POST /admin/articles/bulk`, `GET /admin/articles/export` |
+| Admin      | `GET /admin/reporters`, `PUT /admin/reporters/:id/approve`, `PUT /admin/reporters/:id/reject` |
+| Admin      | `GET /admin/users`, `PUT /admin/users/:id/role`, `PUT /admin/users/:id/activate` |
+| Admin      | `GET /admin/analytics`, `GET /admin/audit-logs` |
+| Admin      | `PUT /admin/breaking-news`, `DELETE /admin/breaking-news` |
+| Categories | `GET /api/categories`, `POST /api/categories`, `PUT /api/categories/:id`, `DELETE /api/categories/:id` |
 
 ---
 
 ## Deployment
 
-| Component | Recommended Free Options         |
-|-----------|----------------------------------|
-| Frontend  | Vercel, Netlify                  |
-| Backend   | Railway, Render, Fly.io          |
-| Database  | PlanetScale, Railway MySQL, Aiven|
-
-### Backend env vars for production:
-```
-DB_HOST=<your-mysql-host>
-DB_PORT=3306
-DB_USER=<user>
-DB_PASSWORD=<password>
-DB_NAME=samachar
-JWT_SECRET=<strong-random-secret>
-CORS_ORIGINS=https://your-frontend.vercel.app
-PORT=8001
-```
+| Component | Recommended |
+|-----------|-------------|
+| Frontend  | Vercel, Netlify |
+| Backend   | Railway, Render, Fly.io |
+| Database  | AWS RDS, PlanetScale, Railway MySQL |
+| Storage   | AWS S3 |
