@@ -24,6 +24,9 @@ export default function HomePage() {
   const { t, isHindi } = useLanguage();
   const [featuredArticles, setFeaturedArticles] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
+  const [latestSkip, setLatestSkip] = useState(0);
+  const [latestHasMore, setLatestHasMore] = useState(true);
+  const [latestLoadingMore, setLatestLoadingMore] = useState(false);
   const [popularArticles, setPopularArticles] = useState([]);
   const [categoryArticles, setCategoryArticles] = useState({});
   const [loading, setLoading] = useState(true);
@@ -45,8 +48,11 @@ export default function HomePage() {
       setFeaturedArticles(featuredRes.data);
 
       // Fetch latest articles
-      const latestRes = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 10 } }, TTL);
-      setLatestArticles(latestRes.data);
+      const latestRes = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 12 } }, TTL);
+      const latestData = latestRes.data.data || latestRes.data;
+      setLatestArticles(latestData);
+      setLatestSkip(latestData.length);
+      setLatestHasMore(latestData.length === 12);
 
       // Fetch popular articles (top by views)
       const popularRes = await cachedGet(axios, `${API}/public/articles`, { params: { limit: 50 } }, TTL);
@@ -72,6 +78,21 @@ export default function HomePage() {
       console.error('Error fetching articles:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMoreLatest = async () => {
+    try {
+      setLatestLoadingMore(true);
+      const res = await axios.get(`${API}/public/articles`, { params: { limit: 12, skip: latestSkip } });
+      const newData = res.data.data || res.data;
+      setLatestArticles(prev => [...prev, ...newData]);
+      setLatestSkip(prev => prev + newData.length);
+      setLatestHasMore(newData.length === 12);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLatestLoadingMore(false);
     }
   };
 
@@ -132,11 +153,26 @@ export default function HomePage() {
             ))}
           </div>
         ) : latestArticles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestArticles.slice(0, 6).map((article) => (
-              <NewsCard key={article.article_id} article={article} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {latestArticles.map((article) => (
+                <NewsCard key={article.article_id} article={article} />
+              ))}
+            </div>
+            {latestHasMore && (
+              <div className="flex justify-center mt-10">
+                <button
+                  onClick={loadMoreLatest}
+                  disabled={latestLoadingMore}
+                  className="px-8 py-3 bg-[#b91c1c] text-white font-semibold rounded hover:bg-[#991b1b] transition-colors disabled:opacity-50"
+                >
+                  {latestLoadingMore
+                    ? (isHindi ? 'लोड हो रहा है...' : 'Loading...')
+                    : (isHindi ? 'और समाचार देखें' : 'Load More')}
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-16 text-gray-500">
             <p className={isHindi ? 'font-hindi' : ''}>
